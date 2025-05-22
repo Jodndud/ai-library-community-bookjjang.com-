@@ -1,5 +1,6 @@
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
+from accounts.models import User
 
 class CustomRegisterSerializer(RegisterSerializer):
     nickname = serializers.CharField(required=True)
@@ -26,3 +27,9 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.favorite_genres = self.validated_data.get('favorite_genres', '')
         user.save()
         return user
+    
+    # 닉네임 중복 체크 확인
+    def validate_nickname(self, value):
+        if User.objects.filter(nickname=value).exists():
+            raise serializers.ValidationError("이미 사용 중인 닉네임입니다.")
+        return value

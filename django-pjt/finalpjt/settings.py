@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-p_ek0+v%6lgwbxk7-qi=$pf*b!4@2p_qlwwxc*p-6x49ycy&(i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -50,10 +50,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'dj_rest_auth',
+    'dj_rest_auth.registration',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'dj_rest_auth.registration',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
