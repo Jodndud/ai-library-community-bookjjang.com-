@@ -1,6 +1,6 @@
 <template>
     <div class="login-form">
-        <form>
+        <form @submit.prevent="login">
             <div class="input-wrap">
                 <input type="text" placeholder="아이디를 입력해 주세요." v-model="id">
                 <input type="password" placeholder="비밀번호를 입력해 주세요." v-model="password">
@@ -16,9 +16,19 @@
 <script setup>
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useAccountStore } from '@/stores/accounts.js'
 
+const accountStore = useAccountStore()
 const id = ref('')
 const password = ref('')
+
+const login = () => {
+    const payload = {
+        username: username.value,
+        password: password.value
+    }
+    accountStore.logIn(payload)
+}
 </script>
 
 <style scoped>
