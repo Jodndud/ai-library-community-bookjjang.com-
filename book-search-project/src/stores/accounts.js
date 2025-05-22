@@ -31,7 +31,7 @@ export const useAccountStore = defineStore('account', () => {
         logIn({ username, password })
       })
       .catch((err) => {
-        console.log(err.response.data)
+        console.log(err)
       })
   }
 
