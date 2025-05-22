@@ -38,17 +38,20 @@ export const useAccountStore = defineStore('account', () => {
     axios({
       method: 'post',
       url: `${API_URL}/accounts/login/`,
-      data: { username, password }
+      data: { username, password },
+      headers: { 'Content-Type': 'application/json' }
     })
       .then((res) => {
         console.log('로그인 완료')
         token.value = res.data.key
-        router.push({ name: 'ArticleView' })
+        router.push({ name: 'home' })
       })
       .catch((err) => {
         console.error('로그인 실패:', err.response?.data || err.message)
+        alert('아이디 또는 비밀번호가 잘못되었습니다.')
       })
   }
+
 
   const logOut = function () {
     axios({

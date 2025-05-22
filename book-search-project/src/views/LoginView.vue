@@ -2,7 +2,7 @@
     <div class="login-form">
         <form @submit.prevent="login">
             <div class="input-wrap">
-                <input type="text" placeholder="아이디를 입력해 주세요." v-model="id">
+                <input type="text" placeholder="아이디를 입력해 주세요." v-model="username">
                 <input type="password" placeholder="비밀번호를 입력해 주세요." v-model="password">
             </div>
 
@@ -19,7 +19,7 @@ import { RouterLink } from 'vue-router'
 import { useAccountStore } from '@/stores/accounts.js'
 
 const accountStore = useAccountStore()
-const id = ref('')
+const username = ref('')
 const password = ref('')
 
 const login = () => {
