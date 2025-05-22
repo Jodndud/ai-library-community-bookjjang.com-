@@ -1,0 +1,52 @@
+@import url('//fonts.googleapis.com/earlyaccess/notosanskr.css');
+
+@font-face {
+    font-family: 'Gothic_Goding';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/naverfont_05@1.0/Gothic_Goding.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+ul,
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+
+body {
+    font-family: 'Noto Sans KR', snas-serif;
+}
+
+.container {
+    width: 1200px;
+    margin: 0 auto;
+}
+
+/* 폰트 설정 */
+.logo>h1 {
+    font-family: 'Gothic_Goding';
+    font-size: 40px;
+}
+
+.navbar a {
+    font-family: 'Gothic_Goding';
+    font-size: 18px;
+}
+
+.logout-btn>input {
+    font-family: 'Gothic_Goding';
+    font-size: 18px;
+    border: unset;
+    background: unset;
+}
