@@ -13,43 +13,41 @@ export const useAccountStore = defineStore('account', () => {
   })
   const router = useRouter()
 
-  const signUp = function ({ username, password1, password2 }) {
+  // payload를 FormData로 만들어 보내도록 변경
+  const signUp = function(formData) {
+    const username = formData.get('username')
+    const password = formData.get('password1')
+
     axios({
       method: 'post',
       url: `${API_URL}/accounts/signup/`,
-      data: {
-        username,
-        password1,
-        password2,
-      }
+      data: formData,
+      headers: { 'Content-Type': 'multipart/form-data' }
     })
-      .then((res) => {
-        console.log('회원가입 완료')
-        // 토큰
-        // console.log(res.data)
-        const password = password1
-        logIn({ username, password })
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    .then((res) => {
+      console.log('회원가입 완료')
+      // 가입 후 로그인
+      logIn({ username, password })
+    })
+    .catch((err) => {
+      console.error('회원가입 실패:', err.response?.data || err.message)
+    })
   }
 
   const logIn = function ({ username, password }) {
     axios({
       method: 'post',
       url: `${API_URL}/accounts/login/`,
-      data: {
-        username, password
-      }
+      data: { username, password }
     })
       .then((res) => {
         console.log('로그인 완료')
-        console.log(res.data)
         token.value = res.data.key
         router.push({ name: 'ArticleView' })
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        console.error('로그인 실패:', err.response?.data || err.message)
+      })
   }
 
   const logOut = function () {
@@ -57,16 +55,13 @@ export const useAccountStore = defineStore('account', () => {
       method: 'post',
       url: `${API_URL}/accounts/logout/`
     })
-      .then((res) => {
-        // 토큰 지우기(로그아웃)
+      .then(() => {
         token.value = null
-        console.log(token.value)
-        console.log('로그아웃 되었습니다.')
         alert('로그아웃 되었습니다.')
         router.push({ name: 'ArticleView' })
       })
       .catch((err) => {
-        console.log(err)
+        console.error('로그아웃 실패:', err.response?.data || err.message)
       })
   }
 
