@@ -4,6 +4,9 @@ import SearchingResultView from '@/views/SearchingResultView.vue'
 import AccountView from '@/views/AccountView.vue'
 import LoginView from '@/views/LoginView.vue'
 import SignupView from '@/views/SignupView.vue'
+import MyPageView from '@/views/MyPageView.vue'
+import BookList from '@/views/BookList.vue'
+import ReviewView from '@/views/ReviewView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,11 +15,6 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: MainPageView
-    },
-    {
-      path: '/searchresult/:value',
-      name: 'searchresult',
-      component: SearchingResultView
     },
     {
       path: '/login',
@@ -39,6 +37,33 @@ const router = createRouter({
           component: SignupView,
         }
       ]
+    },
+    {
+      path: '/books',
+      name: 'books',
+      component: BookList
+    },
+    {
+      path: '/books/:categoryId?',
+      name: 'books',
+      component: BookList,
+    },
+    {
+      path: '/books/search/:value',
+      name: 'booksResult',
+      component: SearchingResultView
+    },
+    {
+      path: '/mypage',
+      component: MyPageView,
+      children: [
+        { path: '', name: 'mypage', component: MyPageView },
+      ]
+    },
+    {
+      path: '/review',
+      name: 'review',
+      component: ReviewView,
     }
   ],
 })

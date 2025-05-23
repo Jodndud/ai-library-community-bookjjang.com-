@@ -65,7 +65,7 @@ const handleClickOutside = (event) => {
 const onSubmit = () => {
   if (searchInput.value.trim()) {
     router.push({
-      name: 'searchresult',
+      name: 'booksResult',
       params: { value: searchInput.value.trim() },
       query: { type: selectedOptionCode.value }  // 예: 'TITLE'
     })
@@ -160,7 +160,6 @@ onUnmounted(() => {
   background: unset;
   font-size: 12px;
   outline: none;
-  /* 포커스 시 파란 테두리 제거 */
 }
 
 #searchForm button {

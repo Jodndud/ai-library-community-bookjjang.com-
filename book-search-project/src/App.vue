@@ -5,14 +5,16 @@
         <div class="logo" @click="goHome">
           <h1>책쨩닷컴</h1>
         </div>
-        <SearchBar v-if="route.path !== '/'" />
+        <SearchBar />
       </div>
       <nav class="navbar">
+        <RouterLink :to="{ name: 'books' }":class="{ active: route.name === 'books' }">전체도서</RouterLink>
+        <RouterLink :to="{ name: 'review' }":class="{ active: route.name === 'review' }">책쨩후기</RouterLink>
+        <RouterLink :to="{ name: 'mypage' }":class="{ active: route.name === 'mypage' }">마이페이지</RouterLink>
+        <RouterLink :to="{ name: 'login' }">로그인</RouterLink>
         <form class="logout-btn">
           <input type="submit" value="로그아웃">
         </form>
-        <RouterLink :to="{ name: 'login' }">로그인</RouterLink>
-        <!-- <RouterLink>전체 도서</RouterLink> -->
       </nav>
     </div>
   </header>
@@ -49,6 +51,7 @@ header {
 
 header .container {
   height: 100%;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -75,6 +78,11 @@ header .logo {
 }
 
 .navbar>a:hover {
-  color: #FF5F0E;
+  color: #ff9a66;
+  font-weight: bold;
+}
+.navbar > a.active {
+  color: #ff9a66;
+  font-weight: bold;
 }
 </style>
