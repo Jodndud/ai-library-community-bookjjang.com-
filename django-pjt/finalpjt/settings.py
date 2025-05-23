@@ -50,10 +50,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'dj_rest_auth',
+    'dj_rest_auth.registration',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'dj_rest_auth.registration',
+    'corsheaders',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -83,6 +84,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'finalpjt.urls'
@@ -146,6 +148,11 @@ env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
 )
+
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:5173',
+    'http://localhost:5173'
+]
 
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
