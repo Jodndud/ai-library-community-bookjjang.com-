@@ -121,7 +121,7 @@ const filterBooks = computed(() => {
 
 .context-wrap{
     display: grid;grid-template-columns: repeat(6, 1fr);
-    gap: 16px 20px;
+    gap: 16px 32px;
 }
 .context-wrap > li{
   display: flex;flex-direction: column;
@@ -129,7 +129,7 @@ const filterBooks = computed(() => {
 }
 .context-wrap > li .img{
   border: 1px solid #eee;
-  height: 240px;
+  height: 260px;
   overflow: hidden;
   border-radius: 5px 12px 12px 5px;
 }
