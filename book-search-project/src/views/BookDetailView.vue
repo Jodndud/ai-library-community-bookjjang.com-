@@ -136,7 +136,8 @@ onMounted(async () => {
 
 /* 댓글 */
 .comment-wrap{
-  padding-top: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #dedede;
 }
 .byte_check_wrap{
   display: flex;flex-direction: column;
