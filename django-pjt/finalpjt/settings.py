@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-p_ek0+v%6lgwbxk7-qi=$pf*b!4@2p_qlwwxc*p-6x49ycy&(i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'corsheaders',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -83,6 +84,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'finalpjt.urls'
@@ -146,6 +148,11 @@ env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
 )
+
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:5173',
+    'http://localhost:5173'
+]
 
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
