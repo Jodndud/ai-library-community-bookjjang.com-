@@ -37,9 +37,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'articles',
     'accounts',
     'books',
+    'threads',
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -70,7 +70,9 @@ REST_FRAMEWORK = {
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
+
 
 SITE_ID = 1
 
