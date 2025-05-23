@@ -3,19 +3,19 @@
     <form @submit.prevent="signUp">
       <div>
         <label for="username">아이디: </label>
-        <input type="text" id="username" v-model="username" />
+        <input type="text" required id="username" v-model="username" />
       </div>
       <div>
         <label for="password1">비밀번호: </label>
-        <input type="password" id="password1" v-model="password1" />
+        <input type="password" required id="password1" v-model="password1" />
       </div>
       <div>
         <label for="password2">비밀번호 확인: </label>
-        <input type="password" id="password2" v-model="password2" />
+        <input type="password" required id="password2" v-model="password2" />
       </div>
       <div>
         <label for="nickname">닉네임: </label>
-        <input type="text" id="nickname" v-model="nickname" />
+        <input type="text" required id="nickname" v-model="nickname" />
       </div>
       <div>
         <label for="age">나이: </label>

@@ -33,15 +33,24 @@ body {
     margin: 0 auto;
 }
 
+.sub-section {
+    background: #ddd;
+    height: 350px;
+    display: flex;
+    align-items: center;
+}
+
+
 /* 폰트 설정 */
 .logo>h1 {
     font-family: 'Gothic_Goding';
-    font-size: 40px;
+    font-size: 36px;
+    transform: translateY(-3px);
 }
 
 .navbar a {
     font-family: 'Gothic_Goding';
-    font-size: 18px;
+    font-size: 20px;
 }
 
 .logout-btn>input {
