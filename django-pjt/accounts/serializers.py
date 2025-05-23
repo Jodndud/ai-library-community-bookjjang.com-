@@ -24,7 +24,9 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.age = self.validated_data.get('age', None)
         user.yearly_reading_amount = self.validated_data.get('yearly_reading_amount', None)
         user.profile_image = self.validated_data.get('profile_image', None)
-        user.favorite_genres = self.validated_data.get('favorite_genres', '')
+        favorite_genres = self.cleaned_data.get('favorite_genres', '')
+        genre_list = [genre.strip() for genre in favorite_genres.split(',') if genre.strip()]
+        user.favorite_genres = ','.join(genre_list)  # 또는 JSONField라면 json 저장
         user.save()
         return user
     
