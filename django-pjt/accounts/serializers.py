@@ -3,7 +3,7 @@ from rest_framework import serializers
 from accounts.models import User
 
 class CustomRegisterSerializer(RegisterSerializer):
-    nickname = serializers.CharField(required=True, default='', null=True)
+    nickname = serializers.CharField(required=True, max_length=50, allow_blank=False)
     age = serializers.IntegerField(required=False)
     yearly_reading_amount = serializers.IntegerField(required=False)
     profile_image = serializers.ImageField(required=False, allow_null=True)

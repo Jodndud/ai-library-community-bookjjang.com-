@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 class User(AbstractUser):
-    nickname = models.CharField(max_length=50, unique=True, null=True, blank=True)  # unique : 중복허용하지 않는다.
+    nickname = models.CharField(max_length=50, unique=True, blank=False, null=False) # unique : 중복허용하지 않는다.
     age = models.PositiveIntegerField(null=True, blank=True)
     yearly_reading_amount = models.PositiveIntegerField(null=True, blank=True)
     profile_image = models.ImageField(
