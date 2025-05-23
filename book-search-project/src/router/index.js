@@ -7,6 +7,7 @@ import SignupView from '@/views/SignupView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import BookList from '@/views/BookList.vue'
 import ReviewView from '@/views/ReviewView.vue'
+import BookDetailView from '@/views/BookDetailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,6 +43,11 @@ const router = createRouter({
       path: '/books',
       name: 'books',
       component: BookList
+    },
+    {
+      path: '/books/detail/:pk',
+      name: 'bookDetail',
+      component: BookDetailView
     },
     {
       path: '/books/:categoryId?',

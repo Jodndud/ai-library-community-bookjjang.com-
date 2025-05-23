@@ -87,7 +87,7 @@ onUnmounted(() => {
   align-items: center;
   border: 1px solid #bbbbbb;
   border-radius: 29px;
-  height: 40px;
+  height: 45px;
   margin: 0 auto;
   width: fit-content;
 }
@@ -106,7 +106,7 @@ onUnmounted(() => {
   border: unset;
   background: unset;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   padding: 13px 0 13px 20px;
 }
 
@@ -158,7 +158,7 @@ onUnmounted(() => {
   padding: 13px 100px 13px 20px;
   border: unset;
   background: unset;
-  font-size: 12px;
+  font-size: 14px;
   outline: none;
 }
 

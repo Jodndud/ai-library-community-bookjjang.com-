@@ -46,6 +46,7 @@ const showHeader = computed(() => {
 header {
   width: 100%;
   height: 80px;
+  background: #f6f6f6;
   border-bottom: 1px solid #eee;
 }
 

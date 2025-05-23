@@ -26,11 +26,14 @@
             </div>
             <ul class="context-wrap">
                 <li v-for="book in filterBooks" :key="book.pk">
-                    <div class="img"><img style="width:100%;height:100%;object-fit: cover;" :src="book.fields.cover" :alt="book.fields.title"></div>
+                    <RouterLink :to="{ name: 'bookDetail', params: { pk: book.pk } }">
+                        <div class="img"><img style="width:100%;height:100%;object-fit: cover;" :src="book.fields.cover" :alt="book.fields.title"></div>
+                    </RouterLink>
                     <div class="text-wrap">
-                        <h3>{{ book.fields.title }}</h3>
-                        <p>{{ book.fields.author }} | {{ book.fields.publisher }} | {{ book.fields.pub_date }}</p>
-                        <p class="text-sub-title">{{ book.fields.subTitle }}</p>
+                        <RouterLink :to="{ name: 'bookDetail', params: { pk: book.pk } }">
+                            <h3>{{ book.fields.title }}</h3>
+                        </RouterLink>
+                        <p>{{ book.fields.author }}</p>
                     </div>
                 </li>
             </ul>
@@ -85,40 +88,58 @@ const filterBooks = computed(() => {
     font-size: 28px;
 }
 
-.category-nav{
+.category-nav{ 
     display: flex;justify-content: space-between;align-items: flex-end;
     margin: 30px 0 30px;
-    padding-bottom: 30px;
-    border-bottom: 1px solid #eee;
-}
-.categories-wrap > a.active {
-  color: #ff9a66;
-  font-weight: bold;
+    border-bottom: 1px solid #dedede;
 }
 .category-nav input{
-  border: 1px solid #666;
-  height: 40px;width: 300px;border-radius: 20px;
+  border: 1px solid #ddd;
+  height: 40px;width: 300px;
   padding-left: 20px;
+  border-bottom: unset;
   outline: none;
 }
 .category-nav .categories-wrap{
-  display: flex;gap: 20px;
+  display: flex;
+}
+.category-nav .categories-wrap > a:first-child{
+    border-left: 1px solid #dedede;
 }
 .category-nav .categories-wrap > a{
-  font-size: 16px;
+    font-size: 14px;
+    padding: 8px 12px;
+    background: #f6f6f6;
+    border: 1px solid #dedede;
+    border-left: unset;
+    border-bottom: unset;
+}
+.category-nav .categories-wrap > a.active{
+    background: #ff9a66;
+    color: #fff;
 }
 
 .context-wrap{
     display: grid;grid-template-columns: repeat(6, 1fr);
-    gap: 16px 32px;
+    gap: 16px 20px;
 }
 .context-wrap > li{
   display: flex;flex-direction: column;
-  gap: 16px; 
+  gap: 8px; 
 }
 .context-wrap > li .img{
-  border: 1px solid #ddd;
+  border: 1px solid #eee;
   height: 240px;
   overflow: hidden;
+  border-radius: 5px 12px 12px 5px;
+}
+
+.text-wrap h3{
+    font-size: 16px;
+    color: #3d3c3f;
+}
+.text-wrap p{
+    font-size: 14px;
+    color: #80888a;
 }
 </style>
