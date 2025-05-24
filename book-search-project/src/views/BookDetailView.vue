@@ -24,9 +24,16 @@
       <section class="detail-section review">
         <div class="review-title-wrap">
           <p>이 책을 읽고 느낀 감정을 작성해보세요. 책짱봇이 그림을 그려줍니다!</p>
-          <button class="review-create-btn">리뷰쓰기</button>
+          <button class="review-create-btn" @click="showReviewModal = true">리뷰쓰기</button>
+
+          <!-- 리뷰작성 컴포넌트 -->
+          <ReviewCreate
+            :show="showReviewModal"
+            @close="showReviewModal=false"
+            @submit="handleReviewSubmit"
+          />
         </div>
-        <ul class="reviews-wrap">
+        <!-- <ul class="reviews-wrap">
           <li>
             <div class="content-wrap">
               <div class="user-date">
@@ -36,7 +43,7 @@
               <div class="likes-comment-wrap">
                 <div class="like-wrap">0</div>
                 <div class="comment-btn" @click="showComments = !showComments">
-                  답글 0
+                  답글 2
                 </div>
               </div>
             </div>
@@ -57,208 +64,128 @@
               </li>
             </ul>
           </li>
-        </ul>
+        </ul> -->
+        <!-- 리뷰 리스트 -->
+        <ReviewList />
+      </section>
+
+      <h1 class="section-title">작가 정보</h1>
+      <section class="detail-section book-description">
+        <p>{{ book.fields.description }}</p>
       </section>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import { useBookListStore } from '@/stores/booksList'
+  import { onMounted, ref } from 'vue'
+  import { useRoute } from 'vue-router'
+  import { useBookListStore } from '@/stores/booksList'
+  import ReviewCreate from '@/components/ReviewCreate.vue'
+  import ReviewList from '@/components/ReviewList.vue'
 
-const route = useRoute()
-const bookStore = useBookListStore()
-const book = ref(null)
+  const showReviewModal = ref(false)
 
-const showComments = ref(false)
-
-onMounted(async () => {
-  if (bookStore.books.length === 0) {
-    await bookStore.fetchBooks()
+  const handleReviewSubmit = (review) => {
+    console.log('리뷰 제출됨:', review)
+    // 여기에 API 호출 또는 상태 저장 로직을 추가하면 됩니다.
   }
+  const route = useRoute()
+  const bookStore = useBookListStore()
+  const book = ref(null)
 
-  const pk = parseInt(route.params.pk)
-  book.value = bookStore.books.find(b => b.pk === pk)
-})
+  const showComments = ref(false)
+
+  onMounted(async () => {
+    // if (bookStore.books.length === 0) {
+    //   await bookStore.fetchBooks()
+    // }
+    await bookStore.fetchBooks()
+
+    const pk = parseInt(route.params.pk)
+    book.value = bookStore.books.find(b => b.pk === pk)
+    console.log(book.fields.cover)
+  })
 </script>
 
 <style scoped>
-.container {
-  margin-top: 40px;
-}
+  .container {
+    margin-top: 40px;
+  }
 
-.section-title{
-  background: #f6f6f6;
-  border: 1px solid #dedede;
-  border-bottom: unset;
-  padding: 8px 20px;
-  width: fit-content;
-  font-size: 18px;font-weight: 500;
-  color: #333;
-}
-.detail-section{
-  border-top: 1px solid #dedede;
-  padding: 40px 0;
-}
-.detail-section p{
-  font-size: 16px;line-height: 1.6;
-  color: #595959;
-}
+  .section-title{
+    background: #f6f6f6;
+    border: 1px solid #dedede;
+    border-bottom: unset;
+    padding: 8px 20px;
+    width: fit-content;
+    font-size: 18px;font-weight: 500;
+    color: #333;
+  }
+  .detail-section{
+    border-top: 1px solid #dedede;
+    padding: 40px 0;
+  }
+  .detail-section p{
+    font-size: 16px;line-height: 1.6;
+    color: #595959;
+  }
 
-/* 리뷰 */
-.review-title-wrap{
-  display: flex;justify-content: space-between;align-items: flex-end;
-  border-bottom: 1px solid #dedede;
-}
-.review .section-title{
-  margin: 0;
-}
-.review-create-btn{
-  background: #f6f6f6;
-  border: 1px solid #dedede;
-  padding: 10px 20px;
-  font-size: 14px;
-}
-.likes-comment-wrap{
-  display: flex;justify-content: flex-end;gap: 20px;
-}
-.content-wrap{
-  margin-top: 20px;
-  padding-bottom: 20px;
-  border-bottom:1px solid #dedede
-}
-.comment-btn{
-  font-size: 14px;color: #767676;
-  cursor: pointer;
-}
+  /* 책 설명 */
+  .book-info-wrap {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+  }
 
-/* 댓글 */
-.comment-wrap{
-  padding: 12px 0;
-  border-bottom: 1px solid #dedede;
-}
-.byte_check_wrap{
-  display: flex;flex-direction: column;
-}
-.comment{
-  display: block;
-  position: relative;
-  padding: 20px 20px 21px 37px;
-  box-sizing: border-box;
-  background-color: #f7f7f7;
-  border-radius: 10px;
-  margin-top: 8px;
-}
-.comment::before{
-  content: '';display: inline-block;
-  position: absolute;top: 24px;   left: 20px;
-  width: 8px;height: 9px;
-  background: url(../assets/img/arw_reply@2x.png) 0% 0% no-repeat;
-  background-size: 8px 9px;
-}
-.comment .content{
-  font-size: 14px;
-}
-.user-date{
-  margin-bottom: 9px;
-  font-size: 12px;color: #767676;
-}
-.form_textarea{
-  width: 100%;height: 70px;
-  padding: 11px 14px 0;
-  font-size: 14px;color: #000;
-  border: 1px solid #d5d5d5;border-radius: 6px 6px 0 0;
-  border-bottom: unset;
-  outline: 0;
-  overflow-y: auto;
-  resize: none;
-  letter-spacing: -0.01em;
-  font-family: "Noto Sans KR", sans-serif;
-}
-.btn_wrap{
-  border: 1px solid #d5d5d5;border-radius: 0 0 6px 6px;
-  border-top: unset;
-  padding: 10px 10px 10px 14px;
-  display: flex;justify-content: flex-end;gap: 4px;
-}
-.btn_wrap button{
-  cursor: pointer;
-  font-size: 12px;
-  padding: 6px 9px;
-  border-radius: 4px;
-  border: unset;
-  color: #fff;
-}
-.btn_wrap .comment-cancle{
-  background: #767676;
-}
-.btn_wrap .comment-submit{
-  background: #2d7c4a;
-}
+  .cover img {
+    width: 220px;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    object-fit: cover;
+  }
 
+  .info {flex: 1;}
 
+  .tags {
+    margin-bottom: 8px;
+    display: flex;
+    gap: 8px;
+  }
 
-.book-info-wrap {
-  display: flex;
-  gap: 40px;
-  align-items: flex-start;
-}
+  .tag {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 13px;
+    border-radius: 12px;
+    background-color: #d1f0df;
+    color: #2d7c4a;
+    font-weight: 600;
+  }
 
-.cover img {
-  width: 220px;
-  height: auto;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  object-fit: cover;
-}
+  .tag.gray {background-color: #f0f0f0;color: #666;}
 
-.info {
-  flex: 1;
-}
+  .title {
+    font-size: 24px;
+    margin: 8px 0;
+    font-weight: bold;
+  }
 
-.tags {
-  margin-bottom: 8px;
-  display: flex;
-  gap: 8px;
-}
+  .meta {
+    color: #555;
+    font-size: 14px;
+    margin-top: 4px;
+  }
 
-.tag {
-  display: inline-block;
-  padding: 4px 8px;
-  font-size: 13px;
-  border-radius: 12px;
-  background-color: #d1f0df;
-  color: #2d7c4a;
-  font-weight: 600;
-}
+  .rating {
+    margin-top: 12px;
+    font-size: 16px;
+    color: #2a7;
+  }
 
-.tag.gray {
-  background-color: #f0f0f0;
-  color: #666;
-}
-
-.title {
-  font-size: 24px;
-  margin: 8px 0;
-  font-weight: bold;
-}
-
-.meta {
-  color: #555;
-  font-size: 14px;
-  margin-top: 4px;
-}
-
-.rating {
-  margin-top: 12px;
-  font-size: 16px;
-  color: #2a7;
-}
-
-.reviews {
-  font-size: 13px;
-  color: #999;
-}
+  .reviews {
+    font-size: 13px;
+    color: #999;
+  }
 </style>

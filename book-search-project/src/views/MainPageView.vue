@@ -1,11 +1,20 @@
 <template>
-  <section class="main-section">
+  <div class="container">
+    <!-- 책짱 추천 도서 -->
+    <MainPageRecommend />
 
-  </section>
+    <!-- 리뷰 미리보기 -->
+    <MainPageReview />
+
+    <!-- 책짱 오늘의 추천 명대사 -->
+    <Paragraph />
+  </div>
 </template>
 
 <script setup>
-import SearchBar from '@/components/SearchBar.vue'
+import MainPageReview from '@/components/MainPageReview.vue'
+import MainPageRecommend from '@/components/MainPageRecommend.vue'
+import Paragraph from '@/components/Paragraph.vue'
 
 </script>
 

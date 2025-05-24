@@ -3,7 +3,7 @@
     <div class="container">
       <div class="logo-search-bar">
         <div class="logo" @click="goHome">
-          <h1>책쨩닷컴</h1>
+          <h1>책짱닷컴</h1>
         </div>
         <SearchBar />
       </div>

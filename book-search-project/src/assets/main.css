@@ -16,6 +16,9 @@ body {font-family: 'Noto Sans KR', snas-serif;}
 .container {width: 1200px;margin: 0 auto;padding-bottom: 150px;}
 .sub-section {background: #ddd;height: 350px;display: flex;align-items: center;}
 
+.main-page-section{display: flex;flex-direction: column;gap: 20px;margin-top: 40px;}
+.main-page-section .section-title{letter-spacing: -0.5px;}
+
 
 /* 폰트 설정 */
 .logo>h1 {
