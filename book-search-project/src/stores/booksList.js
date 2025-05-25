@@ -2,7 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useBookListStore = defineStore('books', () => {
-
+  const API_URL = 'http://127.0.0.1:8000'
   const books = ref([
     {
       "model": "books.book",
@@ -167,16 +167,38 @@ export const useBookListStore = defineStore('books', () => {
     },
   ])
 
-  // 데이터를 비동기로 불러오는 함수
-  const fetchBooks = async () => {
-    try {
-      const res = await fetch('/fixtures/books.json')
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
-      books.value = await res.json()
-    } catch (err) {
-      console.error('데이터 불러오기 실패:', err)
-    }
+  // 전체 책 리스트 조회
+  const FetchBookList = function() {
+    axios({
+      method: 'get',
+      url: `${API_URL}/books/`,
+    })
+    .then((res) => {
+      console.log(res.data)
+      books.value = res.data
+    })
+    .catch((err) => {
+      console.error(err.message)
+    })
   }
 
-  return { books, fetchBooks }
+  // 상세 책 조회
+  const DetailBookList = function(bookId) {
+    axios({
+      method: 'get',
+      url: `${API_URL}/books/${bookId}/`,
+    })
+    .then((res) => {
+      console.log(res.data)
+      books.value = res.data
+    })
+    .catch((err) => {
+      console.error(err.message)
+    })
+  }
+
+  return {
+    books,
+    FetchBookList, DetailBookList,
+  }
 })

@@ -1,8 +1,8 @@
 <template>
     <div class="container">
         <div class="booklistview">
-            <div class="category-nav">
-                <!-- <input type="text" v-model="keyword" placeholder="검색어를 입력하세요..."> -->
+            <!-- <div class="category-nav">
+                <input type="text" v-model="keyword" placeholder="검색어를 입력하세요...">
                 <div class="categories-wrap">
                     <h1>카테고리</h1>
                     <RouterLink
@@ -18,56 +18,82 @@
                     <h1>필터</h1>
                     
                 </div>
-            </div>
+            </div> -->
 
             <ul class="context-wrap">
-                <li v-for="book in filterBooks" :key="book.pk">
-                    <div class="img"><img style="width:100%;height:100%;object-fit: cover;" :src="book.fields.cover" :alt="book.fields.title"></div>
-                    <div class="text-wrap">
-                        <h3>{{ book.fields.title }}</h3>
-                        <p>{{ book.fields.author }} | {{ book.fields.publisher }} | {{ book.fields.pub_date }}</p>
-                        <p class="text-sub-title">{{ book.fields.subTitle }}</p>
-                    </div>
-                </li>
+              <li v-if="filterBooks.length === 0" class="no-result">
+                '{{ keyword }}'의 검색 결과가 없습니다.
+              </li>
+              <li v-for="book in filterBooks" :key="book.pk">
+                <router-link :to="{name:'bookDetail', params:{pk:book.pk}}">
+                  <div class="img">
+                    <img style="width:100%;height:100%;object-fit: cover;" :src="book.fields.cover" :alt="book.fields.title">
+                  </div>
+                </router-link>
+                <div class="text-wrap">
+                  <router-link :to="{name:'bookDetail', params:{pk:book.pk}}">
+                    <h3>{{ book.fields.title }}</h3>
+                  </router-link>
+                  <p>{{ book.fields.author }} | {{ book.fields.publisher }} | {{ book.fields.pub_date }}</p>
+                  <p class="text-sub-title">{{ book.fields.subTitle }}</p>
+                </div>
+              </li>
             </ul>
         </div>
     </div>
 </template>
 
 <script setup>
-import { onMounted, computed, ref } from 'vue'
+import { onMounted, computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useBookListStore } from '@/stores/booksList'
 import { useCategoryStore } from '@/stores/category'
 
-console.log('검색어:', keyword)
-console.log('검색 유형:', type)
 const bookStore = useBookListStore()
 const categoryStore = useCategoryStore()
 const route = useRoute()
 
-const keyword = route.params.value
-const type = route.query.type  // 'TOT', 'TITLE', 'AUTHOR'
+const keyword = ref(route.params.value || '')     // 검색어
+const type = ref(route.query.type || 'TOT')       // 검색 타입
 
 onMounted(() => {
   bookStore.fetchBooks()
   categoryStore.fetchCategories()
 })
 
-// URL params에서 categoryId 가져오기 (반응형)
+// URL에서 categoryId 가져오기
 const categoryId = computed(() => route.params.categoryId)
 
 // 필터링된 책 목록 계산
 const filterBooks = computed(() => {
   const parsedId = parseInt(categoryId.value)
-
+  
   return bookStore.books.filter(book => {
     const matchesCategory = isNaN(parsedId) || book.fields.category === parsedId
-    const matchesKeyword = book.fields.title.includes(keyword.value)
+    const lowerKeyword = keyword.value.toLowerCase()
+
+    const matchesKeyword = (() => {
+      if (!lowerKeyword) return true
+      const { title, author } = book.fields
+      if (type.value === 'TITLE') return title.toLowerCase().includes(lowerKeyword)
+      if (type.value === 'AUTHOR') return author.toLowerCase().includes(lowerKeyword)
+      // TOT(전체)인 경우
+      return title.toLowerCase().includes(lowerKeyword) || author.toLowerCase().includes(lowerKeyword)
+    })()
+
     return matchesCategory && matchesKeyword
   })
 })
+
+watch(
+  () => route.fullPath,
+  () => {
+    keyword.value = route.params.value || ''
+    type.value = route.query.type || 'TOT'
+  }
+)
 </script>
+
 
 <style scoped>
 .container{
@@ -99,9 +125,11 @@ const filterBooks = computed(() => {
 
 .context-wrap{
     display: flex;flex-direction: column;gap: 16px;flex: 1;
+    border-top: 1px solid #dedede;
 }
 .context-wrap > li{
-  display: flex;gap: 16px;padding: 24px 0;border-top: 1px solid #ddd;
+  display: flex;gap: 16px;padding: 24px 0;
+  border-bottom: 1px solid #dedede;
 }
 .context-wrap > li .img{
   width: 120px;

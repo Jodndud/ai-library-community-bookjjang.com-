@@ -46,7 +46,7 @@ export const useReviewStore = defineStore('review', () => {
   const fetchReviews = function(bookId) {
     axios({
       method: 'get',
-      url: `${API_URL}/threads/${bookId}/reviews/`,
+      url: `${API_URL}/${bookId}/threads/`,
     })
     .then((res) => {
       reviews.value = res.data
@@ -60,7 +60,7 @@ export const useReviewStore = defineStore('review', () => {
   const createReview = function(bookId, reviewData) {
     axios({
       method: 'post',
-      url: `${API_URL}/books/${bookId}/reviews/`,
+      url: `${API_URL}/${bookId}/threads/`,
       data: reviewData,
       headers: {
         'Content-Type': 'application/json',
@@ -76,9 +76,22 @@ export const useReviewStore = defineStore('review', () => {
     })
   }
 
+  // 리뷰 상세 조회
+  const detailReview = function(bookId, threadId) {
+    axios({
+      method: 'get',
+      url: `${API_URL}/${bookId}/threads/${threadId}/`,
+    })
+    .then((res) => {
+      reviews.value = res.data
+    })
+    .catch((err) => {
+      console.error('리뷰 불러오기 실패:', err.response?.data || err.message)
+    })
+  }
+
   return {
     reviews,
-    fetchReviews,
-    createReview,
+    fetchReviews, createReview, detailReview
   }
 })

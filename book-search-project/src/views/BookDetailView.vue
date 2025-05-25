@@ -20,7 +20,7 @@
         <p>{{ book.fields.description }}</p>
       </section>
       
-      <h1 class="section-title">도서리뷰 (1)</h1>
+      <h1 class="section-title">도서리뷰 ({{ reviewStore.reviews.length }})</h1>
       <section class="detail-section review">
         <div class="review-title-wrap">
           <p>이 책을 읽고 느낀 감정을 작성해보세요. 책짱봇이 그림을 그려줍니다!</p>
@@ -81,6 +81,7 @@
   import { onMounted, ref } from 'vue'
   import { useRoute } from 'vue-router'
   import { useBookListStore } from '@/stores/booksList'
+  import { useReviewStore } from '@/stores/reviews'
   import ReviewCreate from '@/components/ReviewCreate.vue'
   import ReviewList from '@/components/ReviewList.vue'
 
@@ -92,9 +93,14 @@
   }
   const route = useRoute()
   const bookStore = useBookListStore()
+  const reviewStore = useReviewStore()
   const book = ref(null)
 
   const showComments = ref(false)
+
+  onMounted(() => {
+    reviewStore.fetchReviews()
+  })
 
   onMounted(async () => {
     // if (bookStore.books.length === 0) {

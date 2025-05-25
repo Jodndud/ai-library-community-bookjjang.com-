@@ -5,7 +5,10 @@
         <div class="user-date">
           {{ review.user }} | {{ review.created_at }}
         </div>
-        <div class="content">{{ review.content }}</div>
+        <router-link :to="{name:'reviewDetail', params:{reviewId:review.id}}">
+          <div class="img"><img :src="review.cover_image" alt=""></div>
+          <div class="content">{{ review.title }}</div>
+        </router-link>
         <div class="likes-comment-wrap">
           <div class="like-wrap">
             <span class="ico_like"></span>0
@@ -123,6 +126,12 @@ onMounted(fetchReviews)
   padding-bottom: 20px;
   border-bottom: 1px solid #dedede;
 }
+.content-wrap a{display: flex;gap: 10px;}
+.content-wrap .img{
+  width: 100px;height: 100px;overflow: hidden;
+}
+.content-wrap .img img{width: 100%;height: 100%;object-fit: cover;}
+.content-wrap .content{font-size: 18px;font-weight: 500;}
 .comment-btn {
   font-size: 14px;
   color: #767676;

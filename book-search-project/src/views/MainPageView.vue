@@ -1,13 +1,20 @@
 <template>
   <div class="container">
-    <!-- 책짱 추천 도서 -->
-    <MainPageRecommend />
+    <div class="main-title">
+      <h1>AI기반 추천도서 커뮤니티</h1>
+      <p>회원 평점을 기반으로 한 상위 책 리스트입니다.</p>
+    </div>
 
-    <!-- 리뷰 미리보기 -->
-    <MainPageReview />
-
-    <!-- 책짱 오늘의 추천 명대사 -->
-    <Paragraph />
+    <div class="main-wrap">
+      <!-- 책짱 추천 도서 -->
+      <MainPageRecommend />
+      
+      <!-- 리뷰 미리보기 -->
+      <MainPageReview />
+      
+      <!-- 책짱 오늘의 추천 명대사 -->
+      <Paragraph />
+    </div>
   </div>
 </template>
 
@@ -19,6 +26,16 @@ import Paragraph from '@/components/Paragraph.vue'
 </script>
 
 <style scoped>
+.main-title{
+  display: flex;flex-direction: column;gap: 12px;
+  justify-content: center;align-items: center;
+  height: 250px;
+}
+.main-wrap{
+  border: 1px solid #dedede;
+  padding: 40px;
+  display: flex;flex-direction: column;gap: 40px;
+}
 .main-section .container {
   height: 600px;
   display: flex;
