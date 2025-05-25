@@ -28,8 +28,7 @@ class Book(models.Model):
 class Author(models.Model):
     name = models.CharField(max_length=255, unique=True)  # Book.author와 비교용
     bio = models.TextField(blank=True, null=True)         # Wikipedia로부터 가져온 소개
-    photo = models.ImageField(upload_to='author_profiles/', blank=True, null=True)
-
+    photo = models.ImageField(upload_to='author_profiles/', null=True, blank=True)
 
     def __str__(self):
         return self.name
