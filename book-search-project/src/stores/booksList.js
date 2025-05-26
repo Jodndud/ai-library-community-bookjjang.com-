@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import axios from 'axios'
 
 export const useBookListStore = defineStore('books', () => {
   const API_URL = 'http://127.0.0.1:8000'
@@ -168,33 +169,33 @@ export const useBookListStore = defineStore('books', () => {
   ])
 
   // 전체 책 리스트 조회
-  const FetchBookList = function() {
+  const FetchBookList = function () {
     axios({
       method: 'get',
-      url: `${API_URL}/books/`,
+      url: `${API_URL}/api/v1/books/`,
     })
-    .then((res) => {
-      console.log(res.data)
-      books.value = res.data
-    })
-    .catch((err) => {
-      console.error(err.message)
-    })
+      .then((res) => {
+        console.log(res.data)
+        books.value = res.data
+      })
+      .catch((err) => {
+        console.error(err.message)
+      })
   }
 
   // 상세 책 조회
-  const DetailBookList = function(bookId) {
+  const DetailBookList = function (bookId) {
     axios({
       method: 'get',
-      url: `${API_URL}/books/${bookId}/`,
+      url: `${API_URL}/api/v1/books/${bookId}/`,
     })
-    .then((res) => {
-      console.log(res.data)
-      books.value = res.data
-    })
-    .catch((err) => {
-      console.error(err.message)
-    })
+      .then((res) => {
+        console.log(res.data)
+        books.value = res.data
+      })
+      .catch((err) => {
+        console.error(err.message)
+      })
   }
 
   return {
