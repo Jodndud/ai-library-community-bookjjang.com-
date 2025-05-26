@@ -13,7 +13,7 @@
                 <input type="text" v-model="keyword" placeholder="검색어를 입력하세요...">
             </div>
             <ul class="context-wrap">
-                <li v-for="book in filterBooks" :key="book.id">
+                <li v-for="book in getFilteredBooks()" :key="book.id" :book="book">
                     <RouterLink :to="{ name: 'bookDetail', params: { pk: book.id } }">
                         <div class="img">
                             <img style="width:100%;height:100%;object-fit: cover;" :src="book.cover" :alt="book.title">
@@ -51,21 +51,19 @@ onMounted(() => {
 const categoryId = computed(() => parseInt(route.params.categoryId))
 
 // 필터링된 책 목록 계산 (카테고리 + 키워드)
-const filterBooks = computed(() => {
-    const parsedCategoryId = categoryId.value
+const getFilteredBooks = () => {
+  const parsedCategoryId = categoryId.value
 
-    return bookStore.books.filter(book => {
-        // 카테고리 필터링
-        const categoryMatch = isNaN(parsedCategoryId) || book.category === parsedCategoryId
+  if (!Array.isArray(bookStore.books)) return []
 
-        // 키워드 필터링 (제목, 저자)
-        const keywordMatch = !keyword.value ||
-            book.title.toLowerCase().includes(keyword.value.toLowerCase()) ||
-            book.author.toLowerCase().includes(keyword.value.toLowerCase())
-
-        return categoryMatch && keywordMatch
-    })
-})
+  return bookStore.books.filter(book => {
+    const categoryMatch = isNaN(parsedCategoryId) || book.category === parsedCategoryId
+    const keywordMatch = !keyword.value ||
+      book.title.toLowerCase().includes(keyword.value.toLowerCase()) ||
+      book.author.toLowerCase().includes(keyword.value.toLowerCase())
+    return categoryMatch && keywordMatch
+  })
+}
 
 const isActive = (pk) => {
     return pk === categoryId.value || (isNaN(categoryId.value) && pk === 0)

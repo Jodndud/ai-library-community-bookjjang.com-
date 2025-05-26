@@ -2,20 +2,13 @@
 from rest_framework import serializers
 from .models import Thread, Comment
 
-
 class CommentSerializer(serializers.ModelSerializer):
     # user는 username 등으로만 출력 (읽기 전용)
     user = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Comment
-<<<<<<< HEAD
-        fields = "__all__"
-        # read_only_fields = ('user', 'thread', 'created_at')
-
-=======
         fields = '__all__'
->>>>>>> origin/back-end
 
 class ThreadSerializer(serializers.ModelSerializer):
     # user는 username 등으로만 출력 (읽기 전용)
@@ -29,12 +22,7 @@ class ThreadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Thread
-<<<<<<< HEAD
-        fields = "__all__"
-        # read_only_fields = ('user',)
-=======
         fields = '__all__'  # 모든 필드 사용
->>>>>>> origin/back-end
 
     def get_likes_count(self, obj):
         # 좋아요 개수 반환

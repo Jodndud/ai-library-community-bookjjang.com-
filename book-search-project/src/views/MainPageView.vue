@@ -7,8 +7,10 @@
 
     <div class="main-wrap">
       <!-- 책짱 추천 도서 -->
-      <MainPageRecommend />
-
+      <KeepAlive>
+         <MainPageRecommend />
+      </KeepAlive>
+            
       <!-- 리뷰 미리보기 -->
       <MainPageReview />
 
@@ -32,7 +34,7 @@ import Paragraph from '@/components/Paragraph.vue'
   gap: 12px;
   justify-content: center;
   align-items: center;
-  height: 250px;
+  height: 200px;
 }
 
 .main-wrap {

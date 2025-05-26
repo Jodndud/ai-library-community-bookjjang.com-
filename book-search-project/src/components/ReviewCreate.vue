@@ -1,5 +1,6 @@
 <template>
   <div v-if="show" class="modal-overlay" @click.self="$emit('close')">
+    <div v-if="reviewStore.isLoading">로딩 중...</div>
     <form class="modal" @submit.prevent="reviewCreate">
       <h2>리뷰 작성</h2>
       <!-- 평점을 매겨주세요 -->

@@ -10,6 +10,7 @@ urlpatterns = [
     path('<int:pk>/author/', book_views.author_info_by_book, name='author-info'),    # GET /api/v1/books/<int:pk>/author/
 
     # 쓰레드 관련 (책 별로)
+    path('threads/', thread_views.thread_list, name='thread-list'),  # GET
     path('<int:book_pk>/threads/', thread_views.thread_list_create, name='thread-list-create'),  # GET, POST
     path('<int:book_pk>/threads/<int:pk>/', thread_views.thread_detail, name='thread-detail'),    # GET 상세
     path('<int:book_pk>/threads/<int:pk>/comments/', thread_views.comment_list_create, name='comment-list-create'),  # GET, POST

@@ -1,10 +1,17 @@
 <template>
   <div class="main-page-section">
-    <h2 class="section-title">상위 별점 도서 리스트</h2>
+    <h2 class="section-title">📒 상위 별점 도서 리스트 📒</h2>
     <!-- 리뷰 평점이 높은 순으로 5개 -->
     <div class="recommend-books-wrap">
-      <swiper :slidesPerView="5" :spaceBetween="30" :modules="modules" :navigation="true" :loop="true"
-        class="recommend-books">
+      <swiper
+        v-if="topRatedBooks.length > 0"
+        :slidesPerView="5"
+        :spaceBetween="30"
+        :modules="modules"
+        :navigation="true"
+        :loop="topRatedBooks.length > 5"
+        class="recommend-books"
+      >
         <swiper-slide v-for="book, index in topRatedBooks" :key="book.id">
           <router-link :to="{ name: 'bookDetail', params: { pk: book.id } }">
             <span v-if="index <= 4" class="rank-tag">

@@ -1,4 +1,11 @@
 <template>
+  <div class="loading-overlay" v-if="reviewStore.isLoading">
+  <!-- <div class="loading-overlay" > -->
+    <div class="loading-box">
+      <div class="img"><img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNXdkcWQzZHRubDE1bWl4eDd4NWEzeHQyeDlwNGI2YTZ1Zjd0aXpzYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/0tx3sepJ9cqaQuG5N3/giphy.gif" alt=""></div>
+      <p>작성한 내용을 바탕으로 그림을 그리고 있습니다... 잠시만 기다려주세요...🥕</p>
+    </div>
+  </div>
   <div class="book-detail container" v-if="book">
     <div class="detail-inner" style="width:768px">
 
@@ -30,7 +37,7 @@
           <ReviewCreate :show="showReviewModal" :bookPk="book?.id" @close="showReviewModal = false" />
         </div>
         <!-- 리뷰 리스트 -->
-        <ReviewList :bookPk="book?.id" />
+        <ReviewList />
       </section>
 
       <h1 class="section-title">작가 정보</h1>
@@ -144,27 +151,31 @@ const reviewCount = computed(() => {
   background-color: #f0f0f0;
   color: #666;
 }
+.title {font-size: 24px;margin: 8px 0;font-weight: bold;}
+.meta {color: #555;font-size: 14px;margin-top: 4px;}
+.rating {margin-top: 12px;font-size: 16px;color: #2a7;}
+.reviews {font-size: 13px;color: #999;}
 
-.title {
-  font-size: 24px;
-  margin: 8px 0;
-  font-weight: bold;
+
+/* 로딩 */
+.loading-overlay {
+  position: fixed;top: 0;left: 0;
+  width: 100vw;height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정 */
+  display: flex;justify-content: center;align-items: center;
+  z-index: 9999;
 }
 
-.meta {
-  color: #555;
-  font-size: 14px;
-  margin-top: 4px;
+.loading-box {
+  display: flex;flex-direction: column;align-items: center;justify-content: center;gap:10px;
+  background: rgb(245 237 226);
+  width: 360px;height: 400px;
+  padding: 20px 40px;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.rating {
-  margin-top: 12px;
-  font-size: 16px;
-  color: #2a7;
-}
-
-.reviews {
-  font-size: 13px;
-  color: #999;
-}
+.loading-box img{max-width: 150px;}
+.loading-box p{text-align: center;font-size: 16px;}
 </style>

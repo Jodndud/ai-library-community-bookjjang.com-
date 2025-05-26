@@ -2,7 +2,6 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from accounts.models import User
 
-
 class CustomRegisterSerializer(RegisterSerializer):
     nickname = serializers.CharField(required=True, max_length=50, allow_blank=False)
     age = serializers.IntegerField(required=False)
@@ -12,15 +11,13 @@ class CustomRegisterSerializer(RegisterSerializer):
 
     def get_cleaned_data(self):
         data = super().get_cleaned_data()
-        data["nickname"] = self.validated_data.get("nickname", "")
-        data["age"] = self.validated_data.get("age", None)
-        data["yearly_reading_amount"] = self.validated_data.get(
-            "yearly_reading_amount", None
-        )
-        data["profile_image"] = self.validated_data.get("profile_image", None)
-        data["favorite_genres"] = self.validated_data.get("favorite_genres", "")
+        data['nickname'] = self.validated_data.get('nickname', '')
+        data['age'] = self.validated_data.get('age', None)
+        data['yearly_reading_amount'] = self.validated_data.get('yearly_reading_amount', None)
+        data['profile_image'] = self.validated_data.get('profile_image', None)
+        data['favorite_genres'] = self.validated_data.get('favorite_genres', '')
         return data
-
+    
     def save(self, request):
         user = super().save(request)
         user.nickname = self.validated_data.get('nickname', '')
@@ -32,7 +29,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.favorite_genres = ','.join(genre_list)  # 또는 JSONField라면 json 저장
         user.save()
         return user
-
+    
     # 닉네임 중복 체크 확인
     def validate_nickname(self, value):
         if User.objects.filter(nickname=value).exists():

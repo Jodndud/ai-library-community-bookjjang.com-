@@ -1,10 +1,10 @@
 <template>
   <div class="main-page-section">
-    <h2 class="section-title">책짱 회원들의 리뷰에요</h2>
+    <h2 class="section-title">📙 책짱 회원들의 리뷰에요 📙</h2>
     <ul class="review-item">
       <li v-for="review in reviews" :key="review.id">
-        <router-link class="review" :to="{ name: 'reviewDetail', params: { reviewId: review.id } }">
-          <div class="img"><img :src="review.cover_image" alt="cover" class="cover-image" /></div>
+        <router-link class="review" :to="{ name: 'reviewDetail', params: { bookId:review.book ,reviewId: review.id } }">
+          <div class="img"><img :src="reviewStore.BASE_URL+review.cover_image" alt="cover" class="cover-image" /></div>
           <div class="hover-content">
             <div class="book-title">{{ review.title }}</div>
             <div class="like-count">0</div>
@@ -63,7 +63,7 @@ onMounted(() => {
   align-items: center;
   flex-direction: column;
   gap: 12px;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.6);
   /* 반투명 배경 추가 */
   opacity: 0;
   transition: all 0.2s ease-in-out;

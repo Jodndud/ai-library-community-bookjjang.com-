@@ -5,8 +5,8 @@
         <div class="user-date">
           {{ review.user }} | {{ review.created_at }}
         </div>
-        <router-link :to="{ name: 'reviewDetail', params: { reviewId: review.id } }">
-          <div class="img"><img :src="review.cover_image" alt=""></div>
+        <router-link :to="{ name: 'reviewDetail', params: { bookId: bookId, reviewId: review.id } }">
+          <div class="img"><img :src="reviewStore.BASE_URL+review.cover_image" alt=""></div>
           <div class="content">{{ review.title }}</div>
         </router-link>
         <div class="likes-comment-wrap">
@@ -23,8 +23,11 @@
       <!-- 댓글 목록 및 작성 -->
       <ul class="comment-wrap" v-if="visibleComments.includes(review.id)">
         <div class="byte_check_wrap">
-          <textarea v-model="commentInputs[review.id]" class="form_textarea" title="답글 입력"
-            placeholder="1000자 이내로 입력해주세요." maxlength="1000"></textarea>
+          <textarea
+            v-model="commentInputs[review.id]"
+            class="form_textarea" title="답글 입력"
+            placeholder="1000자 이내로 입력해주세요."
+            maxlength="1000"></textarea>
           <div class="btn_wrap">
             <button class="comment-cancle" @click="cancelComment(review.id)">취소</button>
             <button class="comment-submit" @click="submitComment(review.id)">등록</button>
@@ -42,23 +45,21 @@
 
 <!-- ReviewList.vue -->
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useReviewStore } from '@/stores/reviews'
 
 const reviewStore = useReviewStore()
-const route = useRoute
-const visibleComments = ref([])
 
-const props = defineProps({
-  bookPk: {
-    type: Number,
-    required: true
-  }
-})
+const route = useRoute()
+const bookId = Number(route.params.pk)
+
+const visibleComments = ref([])
+const commentInputs = ref({})
+
 
 onMounted(() => {
-  reviewStore.fetchReviews(props.bookPk)
+  reviewStore.fetchReviews(bookId)
 })
 
 // 댓글 토글 함수 예시
@@ -68,6 +69,25 @@ function toggleComments(reviewId) {
   } else {
     visibleComments.value.push(reviewId)
   }
+}
+
+// 댓글 입력 초기화 (reviewId 별로 비워주기)
+function cancelComment(reviewId) {
+  commentInputs.value[reviewId] = ''
+}
+
+// 댓글 등록 함수 (서버에 전송 후 입력란 비우고 댓글 다시 불러오기)
+function submitComment(reviewId) {
+  const content = commentInputs.value[reviewId]
+  if (!content?.trim()) return
+
+  reviewStore.createComment(bookId, reviewId, { thread: reviewId, content })
+    .then((newComment) => {
+      commentInputs.value[reviewId] = ''  // 입력창 비우기
+    })
+    .catch(err => {
+      console.error('댓글 작성 실패:', err.response?.data || err.message)
+    })
 }
 </script>
 
