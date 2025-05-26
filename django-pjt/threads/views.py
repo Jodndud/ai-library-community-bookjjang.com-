@@ -1,36 +1,50 @@
-from rest_framework import generics, permissions, status
+# threads/views.py
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework import status
+from django.shortcuts import get_object_or_404
 from .models import Thread, Comment
 from .serializers import ThreadSerializer, CommentSerializer
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-from django.shortcuts import get_object_or_404
 
-# 전체 + 작성
-class ThreadListCreateView(generics.ListCreateAPIView):
-    queryset = Thread.objects.all()
-    serializer_class = ThreadSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+# 전체 글 목록 조회 및 글 작성
+# URL: /api/v1/threads/
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def thread_list_create(request, book_pk):
+    if request.method == 'GET':
+        threads = Thread.objects.all()
+        serializer = ThreadSerializer(threads, many=True)
+        return Response(serializer.data)
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    elif request.method == 'POST':
+        serializer = ThreadSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user, book_id=book_pk)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# 단일 조회
-class ThreadDetailView(generics.RetrieveAPIView):
-    queryset = Thread.objects.all()
-    serializer_class = ThreadSerializer
+# 단일 글 조회
+# URL: /api/v1/threads/<int:pk>/
+@api_view(['GET'])
+def thread_detail(request, pk):
+    thread = get_object_or_404(Thread, pk=pk)
+    serializer = ThreadSerializer(thread)
+    return Response(serializer.data)
 
-# 댓글 작성 + 조회 통합
-class CommentListCreateView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
-    # 댓글 목록 조회
-    def get(self, request, pk):
-        comments = Comment.objects.filter(thread_id=pk).order_by('-created_at')
+# 댓글 조회 및 작성
+# URL: /api/v1/threads/<int:pk>/comments/
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def comment_list_create(request, book_pk, pk):
+    thread = get_object_or_404(Thread, pk=pk, book_id=book_pk)
+
+    if request.method == 'GET':
+        comments = Comment.objects.filter(thread=thread).order_by('-created_at')
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    # 댓글 작성
-    def post(self, request, pk):
-        thread = get_object_or_404(Thread, pk=pk)
+
+    elif request.method == 'POST':
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user, thread=thread)
@@ -38,15 +52,15 @@ class CommentListCreateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # 좋아요 토글
-class ToggleLikeView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, pk):
-        thread = get_object_or_404(Thread, pk=pk)
-        user = request.user
-        if user in thread.likes.all():
-            thread.likes.remove(user)
-            return Response({'status': 'unliked'}, status=status.HTTP_200_OK)
-        else:
-            thread.likes.add(user)
-            return Response({'status': 'liked'}, status=status.HTTP_200_OK)
+# URL: /api/v1/threads/<int:pk>/like/
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def toggle_like(request, pk):
+    thread = get_object_or_404(Thread, pk=pk)
+    user = request.user
+    if user in thread.likes.all():
+        thread.likes.remove(user)
+        return Response({'status': 'unliked'}, status=status.HTTP_200_OK)
+    else:
+        thread.likes.add(user)
+        return Response({'status': 'liked'}, status=status.HTTP_200_OK)
