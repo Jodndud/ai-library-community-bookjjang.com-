@@ -12,7 +12,7 @@ class Thread(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     likes = models.ManyToManyField(User, related_name='liked_threads', blank=True)  # 좋아요 기능
-
+    cover_image = models.ImageField(upload_to='thread_covers/', blank=True, null=True)  # 서버에 저장
     def __str__(self):
         return f'{self.title} - {self.user.username}'
     

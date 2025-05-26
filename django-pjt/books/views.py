@@ -45,8 +45,8 @@ def author_info_by_book(request, pk):
             response_img = requests.get(img_url)
             if response_img.status_code == 200:
                 filename = os.path.basename(img_url)
-                author_obj.photo.save(filename, ContentFile(response_img.content), save=False)
-
+                author_obj.photo.save(filename, ContentFile(response_img.content))  # save() 호출
+                
         author_obj.save()
 
     serializer = AuthorSerializer(author_obj, context={'request': request})
