@@ -20,7 +20,7 @@
         <p>{{ book.fields.description }}</p>
       </section>
 
-      <h1 class="section-title">도서리뷰 ({{reviewStore.reviews.filter(r => r.book === book.pk).length}})</h1>
+      <h1 class="section-title">도서리뷰 ({{reviewStore.reviews.filter(r => r.fields.book === book.pk).length}})</h1>
       <section class="detail-section review">
         <div class="review-title-wrap">
           <p>이 책을 읽고 느낀 감정을 작성해보세요. 책짱봇이 그림을 그려줍니다!</p>
@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useBookListStore } from '@/stores/booksList'
 import { useReviewStore } from '@/stores/reviews'
@@ -60,20 +60,21 @@ const bookStore = useBookListStore()
 const reviewStore = useReviewStore()
 const book = ref(null)
 
-const showComments = ref(false)
+const bookPk = parseInt(route.params.pk)
+onMounted(async () => {
+  await bookStore.FetchBookList()
+  book.value = bookStore.books.find(b => b.pk === bookPk)
+})
 
+
+const showComments = ref(false)
 onMounted(() => {
   reviewStore.fetchReviews()
 })
 
-onMounted(async () => {
-  // if (bookStore.books.length === 0) {
-  //   await bookStore.fetchBooks()
-  // }
-  await bookStore.FetchBookList()
-
-  const pk = parseInt(route.params.pk)
-  book.value = bookStore.books.find(b => b.pk === pk)
+// 이 책과 관련된 리뷰만 필터링
+const filteredReviews = computed(() => {
+  return reviewStore.reviews.filter(review => review.fields.book === bookPk)
 })
 </script>
 

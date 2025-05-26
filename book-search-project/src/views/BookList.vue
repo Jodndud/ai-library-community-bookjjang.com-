@@ -53,7 +53,6 @@ const keyword = ref('')
 
 onMounted(() => {
     bookStore.FetchBookList()
-    categoryStore.fetchCategories()
 })
 
 

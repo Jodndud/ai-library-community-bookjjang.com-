@@ -62,16 +62,5 @@ export const useCategoryStore = defineStore('category', () => {
     }
   ])
 
-  // 데이터를 비동기로 불러오는 함수
-  const fetchCategories = async () => {
-    try {
-      const res = await fetch('/fixtures/categories.json')
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
-      categories.value = await res.json()
-    } catch (err) {
-      console.error('데이터 불러오기 실패:', err)
-    }
-  }
-
-  return { categories, fetchCategories }
+  return { categories, }
 })

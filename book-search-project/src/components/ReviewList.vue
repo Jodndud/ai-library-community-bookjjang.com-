@@ -1,93 +1,105 @@
 <template>
   <ul class="reviews-wrap">
-    <li v-for="review in reviews" :key="review.id">
+    <li v-for="review in filteredReviews" :key="review.pk">
       <div class="content-wrap">
         <div class="user-date">
-          {{ review.user }} | {{ review.created_at }}
+          {{ review.fields.user }} | {{ review.fields.created_at }}
         </div>
-        <router-link :to="{ name: 'reviewDetail', params: { reviewId: review.id } }">
-          <div class="img"><img :src="review.cover_image" alt=""></div>
-          <div class="content">{{ review.title }}</div>
+        <router-link :to="{ name: 'reviewDetail', params: { reviewId: review.pk } }">
+          <div class="img"><img :src="review.fields.cover_image" alt="" /></div>
+          <div class="content">{{ review.fields.title }}</div>
         </router-link>
         <div class="likes-comment-wrap">
           <div class="like-wrap">
             <span class="ico_like"></span>0
           </div>
-          <div class="comment-btn" @click="toggleComments(review.id)">
+          <div class="comment-btn" @click="toggleComments(review.pk)">
             <span class="ico_reply"></span>
-            답글 {{ review.comments.length }}
+            답글 {{ getCommentsByReview(review.pk).length }}
           </div>
         </div>
       </div>
 
       <!-- 댓글 목록 및 작성 -->
-      <ul class="comment-wrap" v-if="visibleComments.includes(review.id)">
+      <ul class="comment-wrap" v-if="visibleComments.includes(review.pk)">
         <div class="byte_check_wrap">
-          <textarea v-model="commentInputs[review.id]" class="form_textarea" title="답글 입력"
+          <textarea v-model="commentInputs[review.pk]" class="form_textarea" title="답글 입력"
             placeholder="1000자 이내로 입력해주세요." maxlength="1000"></textarea>
           <div class="btn_wrap">
-            <button class="comment-cancle" @click="cancelComment(review.id)">취소</button>
-            <button class="comment-submit" @click="submitComment(review.id)">등록</button>
+            <button class="comment-cancle" @click="cancelComment(review.pk)">취소</button>
+            <button class="comment-submit" @click="submitComment(review.pk)">등록</button>
           </div>
         </div>
 
-        <li class="comment" v-for="comment in review.comments" :key="comment.id">
-          <div class="user-date">{{ comment.user }} | {{ comment.created_at }}</div>
-          <div class="content">{{ comment.content }}</div>
+        <li class="comment" v-for="comment in getCommentsByReview(review.pk) || []" :key="comment.pk">
+          <div class="user-date">{{ comment.user }} | {{ comment.fields.created_at }}</div>
+          <div class="content">{{ comment.fields.content }}</div>
         </li>
       </ul>
     </li>
   </ul>
 </template>
 
-<!-- ReviewList.vue -->
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useReviewStore } from '@/stores/reviews'
+import { useCommentStore } from '@/stores/comments'
 
 const props = defineProps({
   bookPk: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 })
 
 const reviewStore = useReviewStore()
-const reviews = ref([])
+const commentStore = useCommentStore()
 const visibleComments = ref([])
 const commentInputs = ref({})
 
-const fetchReviews = async () => {
-  await reviewStore.fetchReviews(props.bookPk)  // ✅ bookPk 기준으로 리뷰 요청
-  reviews.value = reviewStore.reviews.filter(r => r.book === props.bookPk)
-}
+// 해당 책에 존재하는 리뷰 필터링
+const filteredReviews = computed(() => {
+  return reviewStore.reviews.filter(review => review.fields.book === props.bookPk)
+})
 
+// 댓글 관련련
+// 해당 리뷰에 존재하는 댓글 필터링
+const getCommentsByReview = (reviewId) => {
+  return commentStore.comments.filter(comment => comment.fields.thread === reviewId)
+}
+// 댓글 창 토글
 const toggleComments = (reviewId) => {
   if (visibleComments.value.includes(reviewId)) {
-    visibleComments.value = visibleComments.value.filter(id => id !== reviewId)
+    visibleComments.value = visibleComments.value.filter((id) => id !== reviewId)
   } else {
     visibleComments.value.push(reviewId)
   }
 }
+// 댓글 작성
+const submitComment = (reviewId) => {
+  const content = commentInputs.value[reviewId]
+  if (!content) return alert('내용을 입력해주세요.')
+
+  commentStore.createComment(props.bookPk, reviewId, { content }).then(() => {
+    commentInputs.value[reviewId] = ''
+    commentStore.fetchComments(props.bookPk, reviewId) // 최신 댓글 반영용
+  })
+}
+
 
 const cancelComment = (reviewId) => {
   commentInputs.value[reviewId] = ''
 }
 
-const submitComment = (reviewId) => {
-  const content = commentInputs.value[reviewId]
-  if (!content) return alert('내용을 입력해주세요.')
+onMounted(() => {
+  reviewStore.fetchReviews(props.bookPk)
+})
 
-  reviewStore.createComment(reviewId, { content })
-    .then(() => {
-      commentInputs.value[reviewId] = ''
-      fetchReviews()
-    })
-}
-
-onMounted(fetchReviews)
-watch(() => props.bookPk, fetchReviews)  // bookPk가 바뀌면 다시 로딩
+watch(() => props.bookPk, (newPk) => {
+  reviewStore.fetchReviews(newPk)
+})
 </script>
+
 
 <style>
 .review-title-wrap {
