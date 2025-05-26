@@ -1,5 +1,6 @@
 # threads/serializers.py
 from rest_framework import serializers
+from decimal import Decimal
 from .models import Thread, Comment
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -23,7 +24,12 @@ class ThreadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Thread
         fields = '__all__'  # 모든 필드 사용
-
+    
+    def validate_rating(self, value):
+        if value not in [Decimal(x) for x in [f'{i/2:.1f}' for i in range(0, 11)]]:
+            raise serializers.ValidationError("Rating must be between 0 and 5 in 0.5 increments.")
+        return value
+    
     def get_likes_count(self, obj):
         # 좋아요 개수 반환
         return obj.likes.count()

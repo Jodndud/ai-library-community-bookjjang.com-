@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from books.models import Book  # books 앱의 모델 가져오기
+from decimal import Decimal
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 User = get_user_model()
 
@@ -9,6 +11,16 @@ class Thread(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # 작성자
     title = models.CharField(max_length=255)
     content = models.TextField()
+    # ⭐ 0 ~ 5 점, 0.5 단위 별점
+    rating = models.DecimalField(
+        max_digits=2,
+        decimal_places=1,
+        default=0.0,
+        validators=[
+            MinValueValidator(Decimal('0.0')),
+            MaxValueValidator(Decimal('5.0'))
+        ]
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     likes = models.ManyToManyField(User, related_name='liked_threads', blank=True)  # 좋아요 기능

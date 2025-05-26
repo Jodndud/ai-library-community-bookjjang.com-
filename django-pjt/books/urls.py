@@ -14,4 +14,8 @@ urlpatterns = [
     path('<int:book_pk>/threads/', thread_views.thread_list_create, name='thread-list-create'),  # GET, POST
     path('<int:book_pk>/threads/<int:pk>/', thread_views.thread_detail, name='thread-detail'),    # GET 상세
     path('<int:book_pk>/threads/<int:pk>/comments/', thread_views.comment_list_create, name='comment-list-create'),  # GET, POST
+   
+    #쓰레드 관련 (책 관계없이 전체)
+    path('threads/', thread_views.thread_list, name='thread-list'),  # GET /api/v1/books/threads/
+    path('threads/<int:pk>/like/', thread_views.toggle_like, name='thread-like'),  # POST
 ]
