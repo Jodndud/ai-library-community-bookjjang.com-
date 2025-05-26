@@ -1,9 +1,11 @@
+import axios from 'axios'
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import { useAccountStore } from '@/stores/accounts'
 
 export const useReviewStore = defineStore('review', () => {
-  const API_URL = 'http://127.0.0.1:8000/api/books'
+  const accountStore = useAccountStore()
+  const API_URL = 'http://127.0.0.1:8000/api/v1/books'
 
   const reviews = ref([
     {
@@ -47,9 +49,12 @@ export const useReviewStore = defineStore('review', () => {
     axios({
       method: 'get',
       url: `${API_URL}/${bookId}/threads/`,
+      headers: {
+        'Authorization': `Token ${accountStore.token}`
+      }
     })
       .then((res) => {
-        reviews.value = res.data
+        reviews.value = res.data.filter(review => review.book === bookId)
       })
       .catch((err) => {
         console.error('리뷰 불러오기 실패:', err.response?.data || err.message)
@@ -58,16 +63,17 @@ export const useReviewStore = defineStore('review', () => {
 
   // 특정 책에 대한 리뷰 작성
   const createReview = function (bookId, reviewData) {
+    // reviewData에 rating, title, content가 모두 포함되어야 함
     axios({
       method: 'post',
       url: `${API_URL}/${bookId}/threads/`,
       data: reviewData,
       headers: {
-        'Content-Type': 'application/json',
+        'Authorization': `Token ${accountStore.token}`
       }
     })
       .then((res) => {
-        reviews.value.push(res.data)
+        fetchReviews(bookId)
         alert('리뷰가 등록되었습니다.')
       })
       .catch((err) => {
@@ -75,6 +81,7 @@ export const useReviewStore = defineStore('review', () => {
         alert('리뷰 등록 중 오류가 발생했습니다.')
       })
   }
+
 
   // 리뷰 상세 조회
   const detailReview = function (bookId, reviewId) {
@@ -91,10 +98,7 @@ export const useReviewStore = defineStore('review', () => {
   }
 
   return {
-    reviews,
-    reviewDetail,
-    fetchReviews,
-    createReview,
-    detailReview,
+    reviews, reviewDetail,
+    fetchReviews, createReview, detailReview
   }
 })

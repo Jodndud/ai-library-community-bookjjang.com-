@@ -1,6 +1,6 @@
 <template>
   <ul class="reviews-wrap">
-    <li v-for="review in reviews" :key="review.id">
+    <li v-for="review in reviewStore.reviews" :key="review.id">
       <div class="content-wrap">
         <div class="user-date">
           {{ review.user }} | {{ review.created_at }}
@@ -11,7 +11,7 @@
         </router-link>
         <div class="likes-comment-wrap">
           <div class="like-wrap">
-            <span class="ico_like"></span>0
+            <span class="ico_like"></span>{{ review.likes_count }}
           </div>
           <div class="comment-btn" @click="toggleComments(review.id)">
             <span class="ico_reply"></span>
@@ -42,8 +42,13 @@
 
 <!-- ReviewList.vue -->
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { useReviewStore } from '@/stores/reviews'
+
+const reviewStore = useReviewStore()
+const route = useRoute
+const visibleComments = ref([])
 
 const props = defineProps({
   bookPk: {
@@ -52,41 +57,18 @@ const props = defineProps({
   }
 })
 
-const reviewStore = useReviewStore()
-const reviews = ref([])
-const visibleComments = ref([])
-const commentInputs = ref({})
+onMounted(() => {
+  reviewStore.fetchReviews(props.bookPk)
+})
 
-const fetchReviews = async () => {
-  await reviewStore.fetchReviews(props.bookPk)  // ✅ bookPk 기준으로 리뷰 요청
-  reviews.value = reviewStore.reviews.filter(r => r.book === props.bookPk)
-}
-
-const toggleComments = (reviewId) => {
+// 댓글 토글 함수 예시
+function toggleComments(reviewId) {
   if (visibleComments.value.includes(reviewId)) {
     visibleComments.value = visibleComments.value.filter(id => id !== reviewId)
   } else {
     visibleComments.value.push(reviewId)
   }
 }
-
-const cancelComment = (reviewId) => {
-  commentInputs.value[reviewId] = ''
-}
-
-const submitComment = (reviewId) => {
-  const content = commentInputs.value[reviewId]
-  if (!content) return alert('내용을 입력해주세요.')
-
-  reviewStore.createComment(reviewId, { content })
-    .then(() => {
-      commentInputs.value[reviewId] = ''
-      fetchReviews()
-    })
-}
-
-onMounted(fetchReviews)
-watch(() => props.bookPk, fetchReviews)  // bookPk가 바뀌면 다시 로딩
 </script>
 
 <style>

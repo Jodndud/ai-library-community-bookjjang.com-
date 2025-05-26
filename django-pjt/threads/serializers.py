@@ -1,13 +1,15 @@
 from rest_framework import serializers
 from .models import Thread, Comment
 
+
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Comment
-        fields = '__all__'
-        read_only_fields = ('user', 'thread', 'created_at')
+        fields = "__all__"
+        # read_only_fields = ('user', 'thread', 'created_at')
+
 
 class ThreadSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
@@ -16,8 +18,8 @@ class ThreadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Thread
-        fields = '__all__'
-        read_only_fields = ('user',)
+        fields = "__all__"
+        # read_only_fields = ('user',)
 
     def get_likes_count(self, obj):
         return obj.likes.count()

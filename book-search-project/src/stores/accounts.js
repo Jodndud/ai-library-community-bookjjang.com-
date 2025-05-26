@@ -7,6 +7,7 @@ import axios from 'axios'
 
 export const useAccountStore = defineStore('account', () => {
   const API_URL = 'http://127.0.0.1:8000'
+
   const token = ref(null)
   const isLogin = computed(() => {
     return token.value ? true : false
@@ -14,7 +15,7 @@ export const useAccountStore = defineStore('account', () => {
   const router = useRouter()
 
   // payload를 FormData로 만들어 보내도록 변경
-  const signUp = function(formData) {
+  const signUp = function (formData) {
     const username = formData.get('username')
     const password = formData.get('password1')
 
@@ -24,14 +25,14 @@ export const useAccountStore = defineStore('account', () => {
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data' }
     })
-    .then((res) => {
-      console.log('회원가입 완료')
-      // 가입 후 로그인
-      logIn({ username, password })
-    })
-    .catch((err) => {
-      console.error('회원가입 실패:', err.response?.data || err.message)
-    })
+      .then((res) => {
+        console.log('회원가입 완료')
+        // 가입 후 로그인
+        logIn({ username, password })
+      })
+      .catch((err) => {
+        console.error('회원가입 실패:', err.response?.data || err.message)
+      })
   }
 
   const logIn = function ({ username, password }) {
@@ -58,13 +59,16 @@ export const useAccountStore = defineStore('account', () => {
       method: 'post',
       url: `${API_URL}/accounts/logout/`
     })
-      .then(() => {
+      .then((res) => {
+        // 토큰 지우기(로그아웃)
         token.value = null
+        console.log(token.value)
+        console.log('로그아웃 되었습니다.')
         alert('로그아웃 되었습니다.')
         router.push({ name: 'ArticleView' })
       })
       .catch((err) => {
-        console.error('로그아웃 실패:', err.response?.data || err.message)
+        console.log(err)
       })
   }
 

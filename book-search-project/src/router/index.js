@@ -9,6 +9,8 @@ import BookList from '@/views/BookList.vue'
 import ReviewView from '@/views/ReviewView.vue'
 import BookDetailView from '@/views/BookDetailView.vue'
 import ReviewDetailView from '@/views/ReviewDetailView.vue'
+import { useAccountStore } from '@/stores/accounts'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -80,4 +82,16 @@ const router = createRouter({
   ],
 })
 
+router.beforeEach((to, from) => {
+  const accountStore = useAccountStore()
+  if (to.name === 'mypage' && !accountStore.isLogin) {
+    return { name: 'login' }
+  }
+})
+router.afterEach((to, from) => {
+  // 다른 페이지에서 home으로 이동한 후 새로고침
+  if (to.name === 'home' && from.name && from.name !== 'home') {
+    window.location.reload()
+  }
+})
 export default router

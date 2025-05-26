@@ -8,38 +8,75 @@
 }
 
 /* 공통 */
-* {margin: 0;padding: 0;box-sizing: border-box;}
-ul, li {list-style: none;}
-a {text-decoration: none;color: #000;}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-body {font-family: 'Noto Sans KR', snas-serif;}
-.container {width: 1200px;margin: 0 auto;padding-bottom: 150px;}
-.sub-section {background: #ddd;height: 350px;display: flex;align-items: center;}
+ul,
+li {
+    list-style: none;
+}
 
-.main-page-section{
-    display: flex;flex-direction: column;gap: 20px;
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+body {
+    font-family: 'Noto Sans KR', snas-serif;
+}
+
+.container {
+    width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 150px;
+}
+
+.sub-section {
+    background: #ddd;
+    height: 350px;
+    display: flex;
+    align-items: center;
+}
+
+.main-page-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     padding-bottom: 20px;
     border-bottom: 1px solid #dedede;
 }
-.main-page-section .section-title{
-    letter-spacing: -0.5px;text-align: center;
-    font-size: 22px;font-weight: 400;
+
+.main-page-section .section-title {
+    letter-spacing: -0.5px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 400;
     width: 100%;
     border: 1px solid #dedede;
     background: #eee;
-    padding: 8px 24px;margin: 0 auto;
+    padding: 8px 24px;
+    margin: 0 auto;
 }
 
 
 /* 폰트 설정 */
 .logo>h1 {
-    font-family: 'Gothic_Goding';font-size: 36px;
+    font-family: 'Gothic_Goding';
+    font-size: 36px;
     transform: translateY(-3px);
 }
+
 .navbar a {
-    font-family: 'Gothic_Goding';font-size: 20px;
+    font-family: 'Gothic_Goding';
+    font-size: 20px;
 }
+
 .logout-btn>input {
-    font-family: 'Gothic_Goding';font-size: 18px;
-    border: unset;background: unset;
+    font-family: 'Gothic_Goding';
+    font-size: 18px;
+    border: unset;
+    background: unset;
 }

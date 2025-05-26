@@ -8,11 +8,11 @@
         <SearchBar />
       </div>
       <nav class="navbar">
-        <RouterLink :to="{ name: 'books' }":class="{ active: route.name === 'books' }">전체도서</RouterLink>
-        <RouterLink :to="{ name: 'review' }":class="{ active: route.name === 'review' }">책쨩후기</RouterLink>
-        <RouterLink :to="{ name: 'mypage' }":class="{ active: route.name === 'mypage' }">마이페이지</RouterLink>
-        <RouterLink :to="{ name: 'login' }">로그인</RouterLink>
-        <form class="logout-btn">
+        <RouterLink :to="{ name: 'books' }" :class="{ active: route.name === 'books' }">전체도서</RouterLink>
+        <RouterLink :to="{ name: 'review' }" :class="{ active: route.name === 'review' }">책쨩후기</RouterLink>
+        <RouterLink :to="{ name: 'mypage' }" :class="{ active: route.name === 'mypage' }">마이페이지</RouterLink>
+        <RouterLink v-if="accountStore.isLogin === false" :to="{ name: 'login' }">로그인</RouterLink>
+        <form v-if="accountStore.isLogin === true" class="logout-btn" @submit.prevent="logOut">
           <input type="submit" value="로그아웃">
         </form>
       </nav>
@@ -24,8 +24,11 @@
 
 <script setup>
 import SearchBar from '@/components/SearchBar.vue'
-import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { computed } from 'vue'
+import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
+import { useAccountStore } from '@/stores/accounts'
+
+const accountStore = useAccountStore()
 
 const route = useRoute()
 const router = useRouter()
@@ -39,6 +42,11 @@ const noLayoutRoutes = ['login', 'signup'] // 이름 기준 조건 분기
 const showHeader = computed(() => {
   return route.name && !noLayoutRoutes.includes(route.name)
 })
+
+// 로그아웃
+const logOut = function () {
+  accountStore.logOut()
+}
 </script>
 
 <style scoped>
@@ -82,7 +90,8 @@ header .logo {
   color: #ff9a66;
   font-weight: bold;
 }
-.navbar > a.active {
+
+.navbar>a.active {
   color: #ff9a66;
   font-weight: bold;
 }

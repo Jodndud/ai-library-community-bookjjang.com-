@@ -6,17 +6,17 @@
           '{{ keyword }}'의 검색 결과가 없습니다.
         </li>
         <li v-for="book in filterBooks" :key="book.pk">
-          <router-link :to="{ name: 'bookDetail', params: { pk: book.pk } }">
+          <router-link :to="{ name: 'bookDetail', params: { pk: book.id } }">
             <div class="img">
-              <img style="width:100%;height:100%;object-fit: cover;" :src="book.fields.cover" :alt="book.fields.title">
+              <img style="width:100%;height:100%;object-fit: cover;" :src="book.cover" :alt="book.title">
             </div>
           </router-link>
           <div class="text-wrap">
-            <router-link :to="{ name: 'bookDetail', params: { pk: book.pk } }">
-              <h3>{{ book.fields.title }}</h3>
+            <router-link :to="{ name: 'bookDetail', params: { pk: book.id } }">
+              <h3>{{ book.title }}</h3>
             </router-link>
-            <p>{{ book.fields.author }} | {{ book.fields.publisher }} | {{ book.fields.pub_date }}</p>
-            <p class="text-sub-title">{{ book.fields.subTitle }}</p>
+            <p>{{ book.author }} | {{ book.publisher }} | {{ book.pub_date }}</p>
+            <p class="text-sub-title">{{ book.subTitle }}</p>
           </div>
         </li>
       </ul>
@@ -39,7 +39,7 @@ const type = ref(route.query.type || 'TOT')       // 검색 타입
 
 onMounted(() => {
   bookStore.FetchBookList()
-  categoryStore.fetchCategories()
+  // categoryStore.fetchCategories()
 })
 
 // URL에서 categoryId 가져오기
@@ -50,12 +50,12 @@ const filterBooks = computed(() => {
   const parsedId = parseInt(categoryId.value)
 
   return bookStore.books.filter(book => {
-    const matchesCategory = isNaN(parsedId) || book.fields.category === parsedId
+    const matchesCategory = isNaN(parsedId) || book.category === parsedId
     const lowerKeyword = keyword.value.toLowerCase()
 
     const matchesKeyword = (() => {
       if (!lowerKeyword) return true
-      const { title, author } = book.fields
+      const { title, author } = book
       if (type.value === 'TITLE') return title.toLowerCase().includes(lowerKeyword)
       if (type.value === 'AUTHOR') return author.toLowerCase().includes(lowerKeyword)
       // TOT(전체)인 경우

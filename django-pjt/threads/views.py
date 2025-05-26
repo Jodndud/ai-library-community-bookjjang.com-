@@ -7,60 +7,64 @@ from django.shortcuts import get_object_or_404
 from .models import Thread, Comment
 from .serializers import ThreadSerializer, CommentSerializer
 
+
 # 전체 글 목록 조회 및 글 작성
 # URL: /api/v1/threads/
-@api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticatedOrReadOnly])
+@api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
 def thread_list_create(request, book_pk):
-    if request.method == 'GET':
+    if request.method == "GET":
         threads = Thread.objects.all()
         serializer = ThreadSerializer(threads, many=True)
         return Response(serializer.data)
 
-    elif request.method == 'POST':
+    elif request.method == "POST":
         serializer = ThreadSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user, book_id=book_pk)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 # 단일 글 조회
 # URL: /api/v1/threads/<int:pk>/
-@api_view(['GET'])
+@api_view(["GET"])
 def thread_detail(request, pk):
     thread = get_object_or_404(Thread, pk=pk)
     serializer = ThreadSerializer(thread)
     return Response(serializer.data)
 
+
 # 댓글 조회 및 작성
 # URL: /api/v1/threads/<int:pk>/comments/
-@api_view(['GET', 'POST'])
+@api_view(["GET", "POST"])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def comment_list_create(request, book_pk, pk):
     thread = get_object_or_404(Thread, pk=pk, book_id=book_pk)
 
-    if request.method == 'GET':
-        comments = Comment.objects.filter(thread=thread).order_by('-created_at')
+    if request.method == "GET":
+        comments = Comment.objects.filter(thread=thread).order_by("-created_at")
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    elif request.method == 'POST':
+    elif request.method == "POST":
         serializer = CommentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user, thread=thread)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 # 좋아요 토글
 # URL: /api/v1/threads/<int:pk>/like/
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def toggle_like(request, pk):
     thread = get_object_or_404(Thread, pk=pk)
     user = request.user
     if user in thread.likes.all():
         thread.likes.remove(user)
-        return Response({'status': 'unliked'}, status=status.HTTP_200_OK)
+        return Response({"status": "unliked"}, status=status.HTTP_200_OK)
     else:
         thread.likes.add(user)
-        return Response({'status': 'liked'}, status=status.HTTP_200_OK)
+        return Response({"status": "liked"}, status=status.HTTP_200_OK)

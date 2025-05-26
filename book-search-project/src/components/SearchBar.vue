@@ -21,7 +21,7 @@
     </div>
 
     <form id="searchForm" @submit.prevent="onSubmit">
-      <input v-model="searchInput" type="text" placeholder="예: 김영하의 그 책 뭐더라..." @focus="isInputFocused = true"
+      <input v-model="searchInput" type="text" placeholder="책 제목이나 저자를 입력해주세요." @focus="isInputFocused = true"
         @blur="isInputFocused = false">
       <button><img src="../assets/img/search-btn.svg" alt=""></button>
     </form>
@@ -155,6 +155,7 @@ onUnmounted(() => {
 /* form */
 #searchForm input {
   height: 100%;
+  width: 350px;
   padding: 13px 100px 13px 20px;
   border: unset;
   background: unset;

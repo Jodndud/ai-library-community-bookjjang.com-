@@ -5,44 +5,44 @@
       <h1 class="section-title">책 정보</h1>
       <section class="detail-section book-info-wrap">
         <div class="cover">
-          <img :src="book.fields.cover" :alt="book.fields.title" />
+          <img :src="book.cover" :alt="book.title" />
         </div>
         <div class="info">
-          <h1 class="title">{{ book.fields.title }}</h1>
-          <p class="meta">{{ book.fields.author }} 지음 | {{ book.fields.publisher }}</p>
-          <p class="meta">{{ book.fields.pub_date }}</p>
-          <p class="rating">⭐ {{ book.fields.rating ?? '5.0' }} <span class="reviews">(리뷰 1건)</span></p>
+          <h1 class="title">{{ book.title }}</h1>
+          <p class="meta">{{ book.author }} 지음 | {{ book.publisher }}</p>
+          <p class="meta">{{ book.pub_date }}</p>
+          <p class="rating">⭐ {{ book.rating ?? '5.0' }} <span class="reviews">(리뷰 {{ reviewCount }}건)</span></p>
         </div>
       </section>
 
       <h1 class="section-title">상세 정보</h1>
       <section class="detail-section book-description">
-        <p>{{ book.fields.description }}</p>
+        <p>{{ book.description }}</p>
       </section>
 
-      <h1 class="section-title">도서리뷰 ({{reviewStore.reviews.filter(r => r.book === book.pk).length}})</h1>
+      <h1 class="section-title">도서리뷰 ({{ reviewCount }})</h1>
       <section class="detail-section review">
         <div class="review-title-wrap">
           <p>이 책을 읽고 느낀 감정을 작성해보세요. 책짱봇이 그림을 그려줍니다!</p>
           <button class="review-create-btn" @click="showReviewModal = true">리뷰쓰기</button>
 
           <!-- 리뷰작성 컴포넌트 -->
-          <ReviewCreate :show="showReviewModal" @close="showReviewModal = false" @submit="handleReviewSubmit" />
+          <ReviewCreate :show="showReviewModal" :bookPk="book?.id" @close="showReviewModal = false" />
         </div>
         <!-- 리뷰 리스트 -->
-        <ReviewList :bookPk="book?.pk" />
+        <ReviewList :bookPk="book?.id" />
       </section>
 
       <h1 class="section-title">작가 정보</h1>
       <section class="detail-section book-description">
-        <p>{{ book.fields.description }}</p>
+        <p>{{ book.description }}</p>
       </section>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useBookListStore } from '@/stores/booksList'
 import { useReviewStore } from '@/stores/reviews'
@@ -51,29 +51,30 @@ import ReviewList from '@/components/ReviewList.vue'
 
 const showReviewModal = ref(false)
 
-const handleReviewSubmit = (review) => {
-  console.log('리뷰 제출됨:', review)
-  // 여기에 API 호출 또는 상태 저장 로직을 추가하면 됩니다.
-}
 const route = useRoute()
 const bookStore = useBookListStore()
 const reviewStore = useReviewStore()
-const book = ref(null)
 
 const showComments = ref(false)
 
+const bookId = computed(() => parseInt(route.params.pk, 10))
+
 onMounted(() => {
-  reviewStore.fetchReviews()
+  bookStore.FetchBookList()
+  reviewStore.fetchReviews(bookId.value)
 })
 
-onMounted(async () => {
-  // if (bookStore.books.length === 0) {
-  //   await bookStore.fetchBooks()
-  // }
-  await bookStore.FetchBookList()
 
-  const pk = parseInt(route.params.pk)
-  book.value = bookStore.books.find(b => b.pk === pk)
+// 상세 도서 뽑아오기
+const book = computed(() => {
+  return bookStore.books.find(book => book.id === bookId.value)
+})
+
+const reviewCount = computed(() => {
+  return reviewStore.reviews.filter(r => {
+    const reviewBookId = typeof r.book === 'object' ? r.book.id : r.book
+    return reviewBookId === book.value?.id  // ⬅️ .value 추가!
+  }).length
 })
 </script>
 

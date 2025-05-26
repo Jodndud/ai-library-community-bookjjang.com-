@@ -1,13 +1,4 @@
 <template>
-    <!-- <section class="sub-section books">
-        <div class="container">
-
-            <div class="text-wrap">
-                <h1>전체 도서</h1>
-                <P>원하는 도서를 찾아보세요</P>
-            </div>
-        </div>
-    </section> -->
     <div class="booklistview">
         <div class="container">
 
@@ -22,16 +13,17 @@
                 <input type="text" v-model="keyword" placeholder="검색어를 입력하세요...">
             </div>
             <ul class="context-wrap">
-                <li v-for="book in filterBooks" :key="book.pk">
-                    <RouterLink :to="{ name: 'bookDetail', params: { pk: book.pk } }">
-                        <div class="img"><img style="width:100%;height:100%;object-fit: cover;" :src="book.fields.cover"
-                                :alt="book.fields.title"></div>
+                <li v-for="book in filterBooks" :key="book.id">
+                    <RouterLink :to="{ name: 'bookDetail', params: { pk: book.id } }">
+                        <div class="img">
+                            <img style="width:100%;height:100%;object-fit: cover;" :src="book.cover" :alt="book.title">
+                        </div>
                     </RouterLink>
                     <div class="text-wrap">
-                        <RouterLink :to="{ name: 'bookDetail', params: { pk: book.pk } }">
-                            <h3>{{ book.fields.title }}</h3>
+                        <RouterLink :to="{ name: 'bookDetail', params: { pk: book.id } }">
+                            <h3>{{ book.title }}</h3>
                         </RouterLink>
-                        <p>{{ book.fields.author }}</p>
+                        <p>{{ book.author }}</p>
                     </div>
                 </li>
             </ul>
@@ -53,29 +45,31 @@ const keyword = ref('')
 
 onMounted(() => {
     bookStore.FetchBookList()
-    categoryStore.fetchCategories()
 })
-
-
-const isActive = (pk) => {
-    // 현재 URL에 categoryId가 없으면 pk가 0일 때 active
-    if (!route.params.categoryId && pk === 0) return true
-    return parseInt(route.params.categoryId) === pk
-}
 
 // URL params에서 categoryId 가져오기 (반응형)
-const categoryId = computed(() => route.params.categoryId)
+const categoryId = computed(() => parseInt(route.params.categoryId))
 
-// 필터링된 책 목록 계산
+// 필터링된 책 목록 계산 (카테고리 + 키워드)
 const filterBooks = computed(() => {
-    const parsedId = parseInt(categoryId.value)
+    const parsedCategoryId = categoryId.value
 
     return bookStore.books.filter(book => {
-        const matchesCategory = isNaN(parsedId) || book.fields.category === parsedId
-        const matchesKeyword = book.fields.title.includes(keyword.value)
-        return matchesCategory && matchesKeyword
+        // 카테고리 필터링
+        const categoryMatch = isNaN(parsedCategoryId) || book.category === parsedCategoryId
+
+        // 키워드 필터링 (제목, 저자)
+        const keywordMatch = !keyword.value ||
+            book.title.toLowerCase().includes(keyword.value.toLowerCase()) ||
+            book.author.toLowerCase().includes(keyword.value.toLowerCase())
+
+        return categoryMatch && keywordMatch
     })
 })
+
+const isActive = (pk) => {
+    return pk === categoryId.value || (isNaN(categoryId.value) && pk === 0)
+}
 </script>
 
 <style scoped>
@@ -128,12 +122,14 @@ const filterBooks = computed(() => {
 }
 
 .context-wrap {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 16px 32px;
+    display: flex;
+    flex-wrap: wrap;
+    /* grid-template-columns: repeat(6, 1fr); */
+    gap: 40px 24px;
 }
 
 .context-wrap>li {
+    width: 15%;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -154,5 +150,59 @@ const filterBooks = computed(() => {
 .text-wrap p {
     font-size: 14px;
     color: #80888a;
+}
+
+.context-wrap>li {
+    width: 15%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border-radius: 12px;
+    padding: 8px;
+}
+
+/* 호버 이펙트 */
+.context-wrap>li:hover {
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+/* 이미지 호버 이펙트 */
+.context-wrap>li .img {
+    border: 1px solid #eee;
+    height: 260px;
+    overflow: hidden;
+    border-radius: 5px 12px 12px 5px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.context-wrap>li:hover .img {
+    transform: scale(1.02);
+}
+
+.context-wrap>li:hover .img img {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+.context-wrap>li .img img {
+    transition: all 0.4s ease;
+}
+
+/* 텍스트 호버 이펙트 */
+.text-wrap h3 {
+    font-size: 16px;
+    color: #3d3c3f;
+    transition: all 0.3s ease;
+}
+
+.text-wrap p {
+    font-size: 14px;
+    color: #80888a;
+    transition: all 0.3s ease;
 }
 </style>
