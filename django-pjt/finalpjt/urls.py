@@ -16,11 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('dj_rest_auth.urls')),
     path('accounts/signup/', include('dj_rest_auth.registration.urls')),
     path('api/v1/books/', include('books.urls')),
-    path('api/v1/threads/', include('threads.urls')),
-]
+    path('api/v1/books/<int:book_pk>/threads/', include('threads.urls')),
+    # 댓글 경로
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
