@@ -110,9 +110,10 @@ const averageRating = computed(() => {
   return (sum / ratings.length).toFixed(1)
 })
 
-// 인증된 사용자만 리뷰 쓰기 가능능
+// 인증된 사용자만 리뷰 쓰기 가능
 const handleReviewClick = () => {
   if (!accountStore.isLogin) {
+    alert('로그인이 필요합니다')
     router.push({ name: 'login' })  // 또는 'LoginPage' 컴포넌트 이름
   } else {
     showReviewModal.value = true
@@ -203,7 +204,7 @@ const handleReviewClick = () => {
 
 .loading-box {
   display: flex;flex-direction: column;align-items: center;justify-content: center;gap:10px;
-  background: rgb(245 237 226);
+  background: rgb(229 245 226);
   width: 360px;height: 400px;
   padding: 20px 40px;
   border-radius: 8px;

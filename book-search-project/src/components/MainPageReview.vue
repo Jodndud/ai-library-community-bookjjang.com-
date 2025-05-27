@@ -1,7 +1,7 @@
 <template>
   <div class="main-page-section">
     <h2 class="section-title">📙 책짱 회원들의 리뷰에요 📙</h2>
-    <ul class="review-item">
+    <ul class="review-item" v-if="sortedReviews && sortedReviews.length">
       <li v-for="review in sortedReviews" :key="review.id">
         <router-link class="review" :to="{ name: 'reviewDetail', params: { bookId:review.book ,reviewId: review.id } }">
           <div class="img"><img :src="review.cover_image" alt="cover" @error="e => e.target.src = noImage" class="cover-image" /></div>
@@ -15,6 +15,9 @@
         </router-link>
       </li>
     </ul>
+    <div class="no-review" v-else>
+      <p>작성된 리뷰가 없습니다.</p>
+    </div>
   </div>
 </template>
 

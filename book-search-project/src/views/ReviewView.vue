@@ -12,7 +12,7 @@
       </button>
     </div>
 
-    <ul class="review-item">
+    <ul class="review-item" v-if="sortedReviews && sortedReviews.length">
       <li v-for="review in sortedReviews" :key="review.id">
         
         <div class="left-content">
@@ -46,6 +46,9 @@
         </div>
       </li>
     </ul>
+    <div class="no-review" v-else>
+      <p>작성된 리뷰가 없습니다.</p>
+    </div>
   </div>
 </template>
 
@@ -87,6 +90,11 @@ const sortedReviews = computed(() => {
 </script>
 
 <style scoped>
+.no-review{
+  border-top: 1px solid #dedede;
+  border-bottom: 1px solid #dedede;
+}
+
 .container{
     width: 768px;
 }

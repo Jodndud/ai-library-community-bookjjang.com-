@@ -129,9 +129,9 @@ const isActive = (pk) => {
 
 .search-wrap input {
     border: 1px solid #ddd;
-    height: 40px;
-    width: 300px;
-    padding-left: 20px;
+    height: 35px;
+    width: 250px;
+    padding-left: 15px;
     outline: none;
 }
 

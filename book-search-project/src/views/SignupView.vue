@@ -126,7 +126,7 @@ const age = ref(null)
 const yearlyReadingAmount = ref(null)
 const favoriteGenres = ref('')
 const profileImage = ref(null)
-const genreOptions = ['소설', '에세이', 'SF', '역사', '자기계발', '시', '추리', '만화']
+const genreOptions = ['소설/시/희곡', '경제/경영', '자기계발', '인문/교양', '취미/실용', '어린이/청소년', '과학']
 const selectedGenres = ref([])
 
 const accountStore = useAccountStore()

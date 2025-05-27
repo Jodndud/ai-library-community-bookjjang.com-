@@ -85,6 +85,7 @@ const router = createRouter({
 router.beforeEach((to, from) => {
   const accountStore = useAccountStore()
   if (to.name === 'mypage' && !accountStore.isLogin) {
+    alert('로그인이 필요합니다')
     return { name: 'login' }
   }
 })

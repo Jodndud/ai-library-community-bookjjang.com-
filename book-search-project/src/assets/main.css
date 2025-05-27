@@ -103,3 +103,15 @@ body {
     color: #2d7c4a;
     font-weight: bold;
 }
+
+
+/* 리뷰 없을 시 */
+.no-review{
+  width: 100%;
+  padding: 20px 0;
+  display: flex;justify-self: center;align-items: center;
+}
+.no-review p{
+  width: 100%;text-align: center;
+  font-size: 14px;
+}
