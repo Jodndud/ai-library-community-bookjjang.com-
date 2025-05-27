@@ -31,7 +31,7 @@ from books.utils.create_ai_image import generate_cover_image  # 추가
 @api_view(['GET'])
 def thread_list(request):
     threads = Thread.objects.all()
-    serializer = ThreadSerializer(threads, many=True)
+    serializer = ThreadSerializer(threads, many=True, context={'request': request})
     return Response(serializer.data)
 
 # ✅ 책 별 글 목록 조회 및 글 작성
@@ -66,27 +66,25 @@ def thread_list_create(request, book_pk):
 @api_view(['GET'])
 def thread_detail(request, book_pk, pk):
     thread = get_object_or_404(Thread, pk=pk, book_id=book_pk)
-    serializer = ThreadSerializer(thread)
+    serializer = ThreadSerializer(thread, context={'request': request})  # context 추가
     return Response(serializer.data)
 
 
 # ✅ 댓글 조회 및 작성
 # URL: /api/v1/books/<int:book_pk>/threads/<int:pk>/comments/
+
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def comment_list_create(request, book_pk, pk):
     thread = get_object_or_404(Thread, pk=pk, book_id=book_pk)
 
     if request.method == 'GET':
         comments = Comment.objects.filter(thread=thread).order_by('-created_at')
-        serializer = CommentSerializer(comments, many=True)
+        serializer = CommentSerializer(comments, many=True, context={'request': request})  # context 추가해도 무방
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'POST':
-        # ✅ POST 요청만 인증 필요
-        if not request.user.is_authenticated:
-            return Response({"detail": "인증이 필요합니다."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        serializer = CommentSerializer(data=request.data)
+        serializer = CommentSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save(user=request.user, thread=thread)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
