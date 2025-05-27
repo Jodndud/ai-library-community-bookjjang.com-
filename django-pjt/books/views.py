@@ -5,9 +5,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Book, Author
-from .serializers import BookSerializer, AuthorSerializer
+from .serializers import BookSerializer, AuthorSerializer, BookDetailSerializer
 from .utils.wiki_api import get_wikipedia_content, get_wikipedia_image
 from django.core.files.base import ContentFile
+# from threads.serializers import ThreadSerializer
 
 # 책 목록 조회
 # URL: api/v1/books/

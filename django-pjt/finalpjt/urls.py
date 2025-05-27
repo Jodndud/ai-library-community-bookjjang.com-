@@ -23,12 +23,16 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # 회원가입 및 로그인
-    path('accounts/', include('dj_rest_auth.urls')),
+    # 로그인/로그아웃
+    path('accounts/', include('dj_rest_auth.urls')),  # login/logout 등 기본 제공
+
+    # 회원가입
     path('accounts/signup/', include('dj_rest_auth.registration.urls')),
+
+    # 마이페이지 (accounts/mypage/)
+    path('accounts/', include('accounts.urls')),
 
     # 도서 API
     path('api/v1/books/', include('books.urls')),
-    
-    # MEDIA 설정
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
