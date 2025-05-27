@@ -83,16 +83,16 @@ header .logo {
 /* 네이게이션 바 */
 .navbar {
   display: flex;
-  gap: 20px;
+  gap: 16px;
 }
 
 .navbar>a:hover {
-  color: #ff9a66;
+  color: #2d7c4a;
   font-weight: bold;
 }
 
 .navbar>a.active {
-  color: #ff9a66;
+  color: #2d7c4a;
   font-weight: bold;
 }
 </style>

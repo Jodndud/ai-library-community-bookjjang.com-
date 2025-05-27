@@ -29,7 +29,7 @@ body {
 }
 
 .container {
-    width: 1200px;
+    width: 768px;
     margin: 0 auto;
     padding-bottom: 150px;
 }
@@ -65,13 +65,17 @@ body {
 /* 폰트 설정 */
 .logo>h1 {
     font-family: 'Gothic_Goding';
-    font-size: 36px;
+    font-size: 30px;
     transform: translateY(-3px);
+}
+
+.navbar {
+    gap: 16px;
 }
 
 .navbar a {
     font-family: 'Gothic_Goding';
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .logout-btn>input {

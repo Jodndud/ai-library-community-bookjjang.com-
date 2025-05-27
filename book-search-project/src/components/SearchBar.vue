@@ -21,7 +21,7 @@
     </div>
 
     <form id="searchForm" @submit.prevent="onSubmit">
-      <input v-model="searchInput" type="text" placeholder="책 제목이나 저자를 입력해주세요." @focus="isInputFocused = true"
+      <input v-model="searchInput" type="text" placeholder="검색어를 입력해주세요." @focus="isInputFocused = true"
         @blur="isInputFocused = false">
       <button><img src="../assets/img/search-btn.svg" alt=""></button>
     </form>
@@ -87,7 +87,7 @@ onUnmounted(() => {
   align-items: center;
   border: 1px solid #bbbbbb;
   /* border-radius: 29px; */
-  height: 45px;
+  height: 40px;
   margin: 0 auto;
   width: fit-content;
 }
@@ -99,15 +99,15 @@ onUnmounted(() => {
 /* select-btn */
 .select-btn {
   position: relative;
-  width: 116px;
+  width: 85px;
   display: flex;
-  gap: 16px;
+  gap: 8px;
   align-items: center;
   border: unset;
   background: unset;
   cursor: pointer;
-  font-size: 14px;
-  padding: 13px 0 13px 20px;
+  font-size: 13px;
+  padding: 10px 0 10px 10px;
 }
 
 .select-btn img.rotated {
@@ -155,11 +155,11 @@ onUnmounted(() => {
 /* form */
 #searchForm input {
   height: 100%;
-  width: 350px;
-  padding: 13px 100px 13px 20px;
+  width: 170px;
+  padding: 10px;
   border: unset;
   background: unset;
-  font-size: 14px;
+  font-size: 13px;
   outline: none;
 }
 

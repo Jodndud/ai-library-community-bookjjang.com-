@@ -1,7 +1,6 @@
 <template>
     <div class="booklistview">
         <div class="container">
-
             <div class="category-nav">
                 <div class="categories-wrap">
                     <RouterLink v-for="category in categoryStore.categories" :key="category.pk"
@@ -10,6 +9,9 @@
                         {{ category.fields.name }}
                     </RouterLink>
                 </div>
+            </div>
+            <div class="search-wrap">
+                <div class="category-name"><span class="name">'{{ currentCategoryName }}'</span>카테고리</div>
                 <input type="text" v-model="keyword" placeholder="검색어를 입력하세요...">
             </div>
             <ul class="context-wrap">
@@ -47,6 +49,14 @@ onMounted(() => {
     bookStore.FetchBookList()
 })
 
+// 해당 카테고리의 이름을 찾는 computed 추가
+const currentCategoryName = computed(() => {
+  const id = categoryId.value
+  if (isNaN(id)) return '전체'
+  const category = categoryStore.categories.find(cat => cat.pk === id)
+  return category ? category.fields.name : '전체'
+})
+
 // URL params에서 categoryId 가져오기 (반응형)
 const categoryId = computed(() => parseInt(route.params.categoryId))
 
@@ -81,24 +91,14 @@ const isActive = (pk) => {
 }
 
 .category-nav {
-    display: flex;
-    justify-content: space-between;
+    display: flex;flex-direction: column-reverse;
     align-items: flex-end;
-    margin: 30px 0 30px;
+    margin: 30px 0 0px;gap: 12px;
     border-bottom: 1px solid #dedede;
 }
 
-.category-nav input {
-    border: 1px solid #ddd;
-    height: 40px;
-    width: 300px;
-    padding-left: 20px;
-    border-bottom: unset;
-    outline: none;
-}
-
 .category-nav .categories-wrap {
-    display: flex;
+    display: flex;width: 100%;
 }
 
 .category-nav .categories-wrap>a:first-child {
@@ -107,7 +107,7 @@ const isActive = (pk) => {
 
 .category-nav .categories-wrap>a {
     font-size: 14px;
-    padding: 8px 12px;
+    padding: 8px 20.4px;
     background: #f6f6f6;
     border: 1px solid #dedede;
     border-left: unset;
@@ -115,27 +115,45 @@ const isActive = (pk) => {
 }
 
 .category-nav .categories-wrap>a.active {
-    background: #ff9a66;
+    background: #2d7c4a;
     color: #fff;
+}
+
+.search-wrap{
+    display: flex;justify-content: space-between;align-items: center;
+}
+.category-name{
+    margin: 20px 0;color: #3d3c3f;
+}
+.category-name .name{font-size:18px;font-weight: 600;margin-right: 4px;}
+
+.search-wrap input {
+    border: 1px solid #ddd;
+    height: 40px;
+    width: 300px;
+    padding-left: 20px;
+    outline: none;
 }
 
 .context-wrap {
     display: flex;
     flex-wrap: wrap;
     /* grid-template-columns: repeat(6, 1fr); */
-    gap: 40px 24px;
+    gap: 20px 12px;
 }
 
 .context-wrap>li {
-    width: 15%;
-    display: flex;
-    flex-direction: column;
+    width: 23.8%;
+    transition: all 0.3s ease;
+    padding: 8px;
+    display: flex;flex-direction: column;
     gap: 8px;
+    cursor: pointer;
 }
 
 .context-wrap>li .img {
     border: 1px solid #eee;
-    height: 260px;
+    height: 220px;
     overflow: hidden;
     border-radius: 5px 12px 12px 5px;
 }
@@ -148,17 +166,6 @@ const isActive = (pk) => {
 .text-wrap p {
     font-size: 14px;
     color: #80888a;
-}
-
-.context-wrap>li {
-    width: 15%;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border-radius: 12px;
-    padding: 8px;
 }
 
 /* 호버 이펙트 */

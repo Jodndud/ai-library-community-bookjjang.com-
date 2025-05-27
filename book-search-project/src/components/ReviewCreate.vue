@@ -37,7 +37,7 @@ const reviewCreate = function () {
   const reviewInfo = {
     title: title.value,
     content: content.value,
-    // rating: rating.value
+    rating: rating.value,
     book: props.bookPk // 만약 서버에서 book을 요구하면 주석 해제
   }
   reviewStore.createReview(props.bookPk, reviewInfo)

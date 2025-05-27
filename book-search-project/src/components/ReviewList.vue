@@ -1,16 +1,17 @@
 <template>
   <ul class="reviews-wrap">
-    <li v-for="review in reviewStore.reviews" :key="review.id">
+    <li v-for="review in sortedReviews" :key="review.id">
       <div class="content-wrap">
         <div class="user-date">
           {{ review.user }} | {{ review.created_at }}
         </div>
         <router-link :to="{ name: 'reviewDetail', params: { bookId: bookId, reviewId: review.id } }">
-          <div class="img"><img :src="reviewStore.BASE_URL+review.cover_image" alt=""></div>
+          <div class="img"><img :src="reviewStore.BASE_URL+review.cover_image"
+                        @error="e => e.target.src = noImage" alt=""></div>
           <div class="content">{{ review.title }}</div>
         </router-link>
         <div class="likes-comment-wrap">
-          <div class="like-wrap">
+          <div class="like-wrap" @click="reviewLike(review.id)">
             <span class="ico_like"></span>{{ review.likes_count }}
           </div>
           <div class="comment-btn" @click="toggleComments(review.id)">
@@ -45,6 +46,7 @@
 
 <!-- ReviewList.vue -->
 <script setup>
+import noImage from '@/assets/img/no_image.jpg'
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useReviewStore } from '@/stores/reviews'
@@ -56,7 +58,6 @@ const bookId = Number(route.params.pk)
 
 const visibleComments = ref([])
 const commentInputs = ref({})
-
 
 onMounted(() => {
   reviewStore.fetchReviews(bookId)
@@ -89,6 +90,21 @@ function submitComment(reviewId) {
       console.error('댓글 작성 실패:', err.response?.data || err.message)
     })
 }
+
+// 좋아요
+const reviewLike = function(reviewId){
+  reviewStore.reviewLike(bookId, reviewId)
+}
+
+// ✅ 최신순 정렬된 리뷰 목록
+const sortedReviews = computed(() => {
+  return [...reviewStore.reviews]
+    .filter((r) => {
+      const reviewBookId = typeof r.book === 'object' ? r.book.id : r.book
+      return reviewBookId === bookId
+    })
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // 최신순 정렬
+})
 </script>
 
 <style>
@@ -113,6 +129,11 @@ function submitComment(reviewId) {
   padding: 10px 20px;
   font-size: 14px;
   cursor: pointer;
+  transition: all .1s;
+}
+.review-create-btn:hover{
+  background: #2d7c4a;
+  color: #fff;
 }
 
 .reviews-wrap {
@@ -161,6 +182,7 @@ function submitComment(reviewId) {
 }
 
 .like-wrap {
+  cursor: pointer;
   display: flex;
   font-size: 14px;
   color: #767676;

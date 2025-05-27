@@ -1,11 +1,11 @@
 <template>
   <div class="main-page-section">
-    <h2 class="section-title">📒 상위 별점 도서 리스트 📒</h2>
+    <h2 class="section-title">📒 도서 리스트 평점 TOP 10 📒</h2>
     <!-- 리뷰 평점이 높은 순으로 5개 -->
     <div class="recommend-books-wrap">
       <swiper
         v-if="topRatedBooks.length > 0"
-        :slidesPerView="5"
+        :slidesPerView="4"
         :spaceBetween="30"
         :modules="modules"
         :navigation="true"
@@ -14,12 +14,13 @@
       >
         <swiper-slide v-for="book, index in topRatedBooks" :key="book.id">
           <router-link :to="{ name: 'bookDetail', params: { pk: book.id } }">
-            <span v-if="index <= 4" class="rank-tag">
+            <span class="rank-tag" :class="{ gray: index + 1 >= 4 }">
               {{ index + 1 }}
             </span>
             <div class="book">
               <div class="img"><img :src="book.cover" alt=""></div>
               <div class="text-wrap">
+                <p>⭐ {{ (parseFloat(book.average_rating) || 0).toFixed(1) }}</p>
                 <h3>{{ book.title }}</h3>
                 <p>{{ book.author }}</p>
               </div>
@@ -46,12 +47,12 @@ const modules = [Navigation]
 
 const bookStore = useBookListStore()
 
-// customer_review_rank 기준으로 정렬
+// average_rating 기준으로 정렬
 const topRatedBooks = computed(() => {
   const booksArray = Array.isArray(bookStore.books) ? bookStore.books : []
   return booksArray
     .slice()
-    .sort((a, b) => (b.customer_review_rank || 0) - (a.customer_review_rank || 0))
+    .sort((a, b) => (b.average_rating || 0) - (a.average_rating || 0))
     .slice(0, 10)
 })
 
@@ -105,7 +106,9 @@ onMounted(() => {
   clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
 }
 
-
+.rank-tag.gray {
+  background-color: #a3a39c; /* 회색 */
+}
 
 .recommend-books-wrap {
   width: 100%;
@@ -120,7 +123,7 @@ onMounted(() => {
 .recommend-books-wrap .img {
   background: #eee;
   border: 1px solid #dedede;
-  height: 290px;
+  height: 210px;
   overflow: hidden;
   border-radius: 5px 12px 12px 5px;
 }

@@ -1,46 +1,90 @@
 <template>
-    <div class="container">
-        <ul class="review-item">
-            <li v-for="review in reviewStore.reviews" :key="review.id">
-                <router-link class="review" :to="{ name: 'reviewDetail', params: { bookId:review.book, reviewId: review.id } }">
-                    <div class="img"><img :src="reviewStore.BASE_URL+review.cover_image" alt="cover" class="cover-image" /></div>
-                    <div class="hover-content">
-                        <div class="book-title">{{ review.title }}</div>
-                        <div class="like-count">[0]</div>
-                    </div>
-                </router-link>
-                <div class="right-content">
-                    <p class="book-title">{{ bookTitleById(review.book) }}</p>
-                    <p class="username">{{ review.user }}</p>
-                </div>
-            </li>
-        </ul>
+  <div class="container">
+    <div class="categories-wrap">
+      <button
+        v-for="option in sortOptions"
+        :key="option"
+        @click="selectedSort = option"
+        :class="{ active: selectedSort === option }"
+        class="sort-button"
+      >
+        {{ option }}
+      </button>
     </div>
+
+    <ul class="review-item">
+      <li v-for="review in sortedReviews" :key="review.id">
+        <router-link
+          class="review"
+          :to="{ name: 'reviewDetail', params: { bookId: review.book, reviewId: review.id } }"
+        >
+          <div class="img">
+            <img
+              :src="reviewStore.BASE_URL + review.cover_image"
+              alt="cover"
+              class="cover-image"
+              @error="e => e.target.src = noImage"
+            />
+          </div>
+          <div class="title-wrap">
+            <p class="username">{{ review.user }}</p>
+            <div class="hover-content">
+                <div class="book-title">{{ review.title }}</div>
+                <div class="like-count">[{{ review.like_count || 0 }}]</div>
+            </div>
+          </div>
+        </router-link>
+        <div class="right-content">
+          <p class="book-title">{{ bookTitleById(review.book) }}</p>
+          <p class="rating">⭐ {{ review.rating ?? '0.0' }}</p>
+        </div>
+      </li>
+    </ul>
+  </div>
 </template>
 
+
 <script setup>
-import { onMounted } from 'vue'
+import noImage from '@/assets/img/no_image.jpg'
+
+import { ref, onMounted, computed } from 'vue'
 import { useReviewStore } from '@/stores/reviews'
 import { useBookListStore } from '@/stores/booksList'
 
 const reviewStore = useReviewStore()
 const bookStore = useBookListStore()
 
-// 책 제목을 bookId로 찾아 반환하는 함수
+onMounted(() => {
+  reviewStore.reviewsList()
+  bookStore.FetchBookList()  // 책 목록 미리 불러오기
+})
+
+const sortOptions = ['최신순', '좋아요순']
+const selectedSort = ref('최신순')
+
+// 책 제목 반환 함수
 function bookTitleById(bookId) {
   const book = bookStore.books.find((b) => b.id === bookId)
   return book ? book.title : '알 수 없는 책'
 }
 
-onMounted(() => {
-  reviewStore.reviewsList()
-  bookStore.FetchBookList()  // 책 목록 미리 불러오기
+// 정렬된 리뷰 목록 (computed로 반응형 정렬)
+const sortedReviews = computed(() => {
+  const reviews = [...reviewStore.reviews]
+  if (selectedSort.value === '최신순') {
+    return reviews.sort((a, b) => b.id - a.id)  // 최신순: ID 내림차순
+  } else if (selectedSort.value === '좋아요순') {
+    return reviews.sort((a, b) => b.like_count - a.like_count)  // 좋아요순
+  }
+  return reviews
 })
 </script>
 
 <style scoped>
+.container{
+    width: 768px;
+}
 .review-item {
-    margin-top: 40px;
     border-top: 1px solid #dedede;
 }
 
@@ -57,10 +101,44 @@ onMounted(() => {
 .review img{width: 100%;}
 .review .hover-content{display: flex;align-items: center;gap: 8px;}
 
+.title-wrap{
+    display: flex;flex-direction: column;justify-content: center;
+}
+.title-wrap p{
+    font-size: 14px;color: #878787;
+}
 
 .right-content{
-    display: flex;align-content: center;gap: 12px;
-    font-size: 16px;font-weight: 300;color: #333;
+    display: flex;align-content: flex-end;gap: 4px;flex-direction: column;
+    font-size: 16px;font-weight: 300;color: #333;text-align: right;
 }
-.right-content .book-title{color: red;}
+.right-content .book-title{
+    color: #333;font-weight: 700;
+}
+.right-content .rating{
+    font-size: 14px;
+}
+/* 필터 바 */
+.categories-wrap{
+    display: flex;margin-top: 40px;
+    justify-content: flex-end;
+}
+.categories-wrap .sort-button:first-child {
+    border-left: 1px solid #dedede;
+}
+
+.categories-wrap .sort-button {
+    cursor: pointer;
+    font-size: 14px;
+    padding: 8px 12px;
+    background: #f6f6f6;
+    border: 1px solid #dedede;
+    border-left: unset;
+    border-bottom: unset;
+}
+
+.categories-wrap .sort-button.active {
+    background: #2d7c4a;
+    color: #fff;
+}
 </style>

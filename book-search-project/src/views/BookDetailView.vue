@@ -18,7 +18,10 @@
           <h1 class="title">{{ book.title }}</h1>
           <p class="meta">{{ book.author }} 지음 | {{ book.publisher }}</p>
           <p class="meta">{{ book.pub_date }}</p>
-          <p class="rating">⭐ {{ book.rating ?? '5.0' }} <span class="reviews">(리뷰 {{ reviewCount }}건)</span></p>
+          <p class="rating">
+            ⭐ {{ averageRating ?? '0.0' }}
+            <span class="reviews">(리뷰 {{ reviewCount }}건)</span>
+          </p>
         </div>
       </section>
 
@@ -69,6 +72,8 @@ const bookId = computed(() => parseInt(route.params.pk, 10))
 onMounted(() => {
   bookStore.FetchBookList()
   reviewStore.fetchReviews(bookId.value)
+  // 작가정보 불러오기
+  reviewStore.authorInfo(bookId.value)
 })
 
 
@@ -82,6 +87,24 @@ const reviewCount = computed(() => {
     const reviewBookId = typeof r.book === 'object' ? r.book.id : r.book
     return reviewBookId === book.value?.id  // ⬅️ .value 추가!
   }).length
+})
+
+
+// rating 평균 내기
+const averageRating = computed(() => {
+  const relatedReviews = reviewStore.reviews.filter(r => {
+    const reviewBookId = typeof r.book === 'object' ? r.book.id : r.book
+    return reviewBookId === book.value?.id
+  })
+
+  const ratings = relatedReviews
+    .map(r => Number(r.rating))
+    .filter(rating => !isNaN(rating)) // 숫자로 변환되지 않는 값은 제외
+
+  if (ratings.length === 0) return null
+
+  const sum = ratings.reduce((acc, r) => acc + r, 0)
+  return (sum / ratings.length).toFixed(1)
 })
 </script>
 
@@ -107,7 +130,7 @@ const reviewCount = computed(() => {
 }
 
 .detail-section p {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.6;
   color: #595959;
 }
@@ -115,12 +138,12 @@ const reviewCount = computed(() => {
 /* 책 설명 */
 .book-info-wrap {
   display: flex;
-  gap: 40px;
+  gap: 24px;
   align-items: flex-start;
 }
 
 .cover img {
-  width: 220px;
+  width: 150px;
   height: auto;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -151,9 +174,9 @@ const reviewCount = computed(() => {
   background-color: #f0f0f0;
   color: #666;
 }
-.title {font-size: 24px;margin: 8px 0;font-weight: bold;}
-.meta {color: #555;font-size: 14px;margin-top: 4px;}
-.rating {margin-top: 12px;font-size: 16px;color: #2a7;}
+.title {font-size: 20px;margin: 8px 0;font-weight: bold;}
+.meta {color: #555;font-size: 14px;}
+.rating {margin-top: 8px;font-size: 14px;color: #2a7;}
 .reviews {font-size: 13px;color: #999;}
 
 

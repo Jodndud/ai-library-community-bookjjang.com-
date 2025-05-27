@@ -6,7 +6,7 @@ import { useReviewStore } from '@/stores/reviews'
 
 export const useBookListStore = defineStore('books', () => {
   const accountStore = useAccountStore()
-  
+
   const API_URL = 'http://127.0.0.1:8000'
   const books = ref([])
 

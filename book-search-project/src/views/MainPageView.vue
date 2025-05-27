@@ -1,9 +1,9 @@
 <template>
   <div class="container">
-    <div class="main-title">
+    <!-- <div class="main-title">
       <h1>AI기반 추천도서 커뮤니티</h1>
       <p>회원 평점을 기반으로 한 상위 책 리스트입니다.</p>
-    </div>
+    </div> -->
 
     <div class="main-wrap">
       <!-- 책짱 추천 도서 -->
@@ -38,8 +38,9 @@ import Paragraph from '@/components/Paragraph.vue'
 }
 
 .main-wrap {
-  border: 1px solid #dedede;
-  padding: 40px;
+  margin-top: 40px;
+  /* border: 1px solid #dedede;
+  padding: 40px; */
   display: flex;
   flex-direction: column;
   gap: 40px;
