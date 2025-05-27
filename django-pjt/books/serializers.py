@@ -3,6 +3,11 @@ from .models import Book, Author
 from threads.models import Thread  # Thread에서 rating을 가져옴
 from django.db.models import Avg  # 평균 계산용
 
+class BookSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ['id', 'title', 'author', 'cover_image']  # 필요한 필드만 넣기
+        
 class BookSerializer(serializers.ModelSerializer):
     average_rating = serializers.SerializerMethodField()
     

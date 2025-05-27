@@ -1,5 +1,3 @@
-// store/accounts.js
-
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { useRouter } from 'vue-router'
@@ -9,12 +7,14 @@ export const useAccountStore = defineStore('account', () => {
   const API_URL = 'http://127.0.0.1:8000'
 
   const token = ref(null)
-  const isLogin = computed(() => {
-    return token.value ? true : false
-  })
+  const isLogin = computed(() => !!token.value)
   const router = useRouter()
 
-  // payload를 FormData로 만들어 보내도록 변경
+  const userInfo = ref(null)  // 유저 정보는 객체로 관리하는 게 편함
+
+  // 현재 로그인한 유저 이름 쉽게 가져오기
+  const username = computed(() => userInfo.value?.username || '')
+
   const signUp = function (formData) {
     const username = formData.get('username')
     const password = formData.get('password1')
@@ -25,10 +25,9 @@ export const useAccountStore = defineStore('account', () => {
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data' }
     })
-      .then((res) => {
+      .then(() => {
         console.log('회원가입 완료')
-        // 가입 후 로그인
-        logIn({ username, password })
+        logIn({ username, password })  // 회원가입 후 바로 로그인
       })
       .catch((err) => {
         console.error('회원가입 실패:', err.response?.data || err.message)
@@ -45,6 +44,7 @@ export const useAccountStore = defineStore('account', () => {
       .then((res) => {
         console.log('로그인 완료')
         token.value = res.data.key
+        myPage()  // 로그인 성공하면 내 정보 가져오기 호출
         router.push({ name: 'home' })
       })
       .catch((err) => {
@@ -53,16 +53,14 @@ export const useAccountStore = defineStore('account', () => {
       })
   }
 
-
   const logOut = function () {
     axios({
       method: 'post',
       url: `${API_URL}/accounts/logout/`
     })
-      .then((res) => {
-        // 토큰 지우기(로그아웃)
+      .then(() => {
         token.value = null
-        console.log(token.value)
+        userInfo.value = null
         console.log('로그아웃 되었습니다.')
         alert('로그아웃 되었습니다.')
         router.push({ name: 'ArticleView' })
@@ -72,8 +70,9 @@ export const useAccountStore = defineStore('account', () => {
       })
   }
 
-  const userInfo = ref([])
   const myPage = function () {
+    if (!token.value) return
+
     axios({
       method: 'get',
       url: `${API_URL}/accounts/mypage/`,
@@ -82,17 +81,16 @@ export const useAccountStore = defineStore('account', () => {
       }
     })
       .then((res) => {
-        console.log(res.data)
         userInfo.value = res.data
+        console.log('내 정보:', res.data)
       })
       .catch((err) => {
         console.log(err)
       })
-
   }
 
   return {
-    token, isLogin, userInfo,
+    token, isLogin, userInfo, username,
     signUp, logIn, logOut, myPage
   }
 }, { persist: true })

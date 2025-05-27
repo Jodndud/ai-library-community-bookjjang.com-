@@ -28,3 +28,7 @@ class User(AbstractUser):
         if not self.favorite_genres:
             return []
         return [genre.strip() for genre in self.favorite_genres.split(',')]
+    
+    def __str__(self):
+        return self.username
+
