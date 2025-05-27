@@ -12,25 +12,6 @@ from books.utils.create_ai_image import generate_cover_image  # 추가
 @api_view(['GET'])
 def thread_list(request):
     threads = Thread.objects.all()
-    serializer = ThreadSerializer(threads, many=True)
-    return Response(serializer.data)
-
-# ✅ 책 별 글 목록 조회 및 글 작성
-# URL: /api/v1/books/<int:book_pk>/threads/
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
-from django.shortcuts import get_object_or_404
-from .models import Thread, Comment
-from .serializers import ThreadSerializer, CommentSerializer
-from books.utils.create_ai_image import generate_cover_image  # 추가
-
-# ✅ 전체 글 목록 조회 (책과 무관)
-# URL: /api/v1/books/threads/
-@api_view(['GET'])
-def thread_list(request):
-    threads = Thread.objects.all()
     serializer = ThreadSerializer(threads, many=True, context={'request': request})
     return Response(serializer.data)
 
@@ -45,7 +26,10 @@ def thread_list_create(request, book_pk):
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        # ✅ 로그인 사용자만 접근 가능 (IsAuthenticatedOrReadOnly 덕분)
+        # ✅ 인증 체크 명시적으로 수행
+        if not request.user or not request.user.is_authenticated:
+            return Response({'detail': '인증이 필요합니다.'}, status=status.HTTP_401_UNAUTHORIZED)
+
         serializer = ThreadSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             thread = serializer.save(user=request.user, book_id=book_pk)
@@ -60,6 +44,7 @@ def thread_list_create(request, book_pk):
 
             return Response(ThreadSerializer(thread, context={'request': request}).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # ✅ 단일 글 조회
 # URL: /api/v1/books/<int:book_pk>/threads/<int:pk>/
