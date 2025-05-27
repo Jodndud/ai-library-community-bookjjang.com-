@@ -12,26 +12,25 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ThreadSerializer(serializers.ModelSerializer):
-    # user는 username 등으로만 출력 (읽기 전용)
     user = serializers.StringRelatedField(read_only=True)
-    # 댓글 목록 (읽기 전용)
     comments = CommentSerializer(many=True, read_only=True)
-    # 좋아요 개수 (읽기 전용)
-    likes_count = serializers.SerializerMethodField()
-    # cover_image는 업로드 및 검증이 필요한 필드
+
+    is_liked = serializers.SerializerMethodField()
     cover_image = serializers.ImageField(read_only=True)
 
     class Meta:
         model = Thread
-        fields = '__all__'  # 모든 필드 사용
-    
+        fields = '__all__'
+        read_only_fields = ['user', 'comments', 'like_count', 'cover_image']
+
     def validate_rating(self, value):
-        if value not in [Decimal(x) for x in [f'{i/2:.1f}' for i in range(0, 11)]]:
+        allowed_values = [Decimal(f'{i / 2:.1f}') for i in range(11)]  # 0.0 ~ 5.0
+        if value not in allowed_values:
             raise serializers.ValidationError("Rating must be between 0 and 5 in 0.5 increments.")
         return value
-    
-    def get_likes_count(self, obj):
-        # 좋아요 개수 반환
-        return obj.likes.count()
+
+    def get_is_liked(self, obj):
+        user = self.context.get('request').user
+        return user.is_authenticated and obj in user.liked_threads.all()
 
     

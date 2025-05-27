@@ -17,11 +17,14 @@ class User(AbstractUser):
         blank=True,
         help_text="여러 장르는 쉼표(,)로 구분해 주세요. 예: 소설, 에세이, SF"
     )
+    liked_threads = models.ManyToManyField(
+        'threads.Thread', 
+        related_name='liked_by_users', 
+        blank=True
+    )
 
     @property
     def favorite_genres_list(self):
         if not self.favorite_genres:
             return []
         return [genre.strip() for genre in self.favorite_genres.split(',')]
-
-

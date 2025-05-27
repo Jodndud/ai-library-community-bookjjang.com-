@@ -3,6 +3,7 @@ from django.urls import path#,include
 from . import views as book_views
 from threads import views as thread_views
 
+
 urlpatterns = [
     # 도서 관련
     path('', book_views.book_list, name='book-list'),                                # GET /api/v1/books/
@@ -15,6 +16,7 @@ urlpatterns = [
     path('<int:book_pk>/threads/<int:pk>/comments/', thread_views.comment_list_create, name='comment-list-create'),  # GET, POST
    
     #쓰레드 관련 (책 관계없이 전체)
+    path('liked-threads/', thread_views.liked_threads_list, name='liked_threads_list'),
     path('threads/', thread_views.thread_list, name='thread-list'),  # GET /api/v1/books/threads/
-    path('threads/<int:pk>/like/', thread_views.toggle_like, name='thread-like'),  # POST
+    path('<int:book_pk>/threads/<int:pk>/like/', thread_views.toggle_like, name='thread-like'),  # POST
 ]
