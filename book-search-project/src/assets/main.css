@@ -70,8 +70,8 @@ body {
 }
 
 .logout-btn>input {
-    font-family: 'Gothic_Goding';
-    font-size: 18px;
+    font-size: 14px;
+    transform: translateY(-3px);
     border: unset;
     background: unset;
 }

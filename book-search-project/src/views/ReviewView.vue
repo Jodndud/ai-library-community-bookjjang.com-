@@ -18,6 +18,7 @@
           class="review"
           :to="{ name: 'reviewDetail', params: { bookId: review.book, reviewId: review.id } }"
         >
+          <div class="like">2</div>
           <div class="img">
             <img
               :src="reviewStore.BASE_URL + review.cover_image"
@@ -27,7 +28,6 @@
             />
           </div>
           <div class="title-wrap">
-            <p class="username">{{ review.user }}</p>
             <div class="hover-content">
                 <div class="book-title">{{ review.title }}</div>
                 <div class="comments-count">[{{ review.comments.length || 0 }}]</div>
@@ -94,7 +94,7 @@ const sortedReviews = computed(() => {
     display: flex;justify-content: space-between;align-items: center;
 }
 
-.review{display: flex;gap: 12px;}
+.review{display: flex;gap: 12px;align-items: center;}
 .review .img{
     width: 80px;height: 80px;overflow: hidden;
 }
