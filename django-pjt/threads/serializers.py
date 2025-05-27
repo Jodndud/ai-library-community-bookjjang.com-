@@ -3,6 +3,8 @@ from rest_framework import serializers
 from decimal import Decimal
 from .models import Thread, Comment
 
+
+
 class CommentSerializer(serializers.ModelSerializer):
     # user는 username 등으로만 출력 (읽기 전용)
     user = serializers.StringRelatedField(read_only=True)
@@ -17,7 +19,8 @@ class ThreadSerializer(serializers.ModelSerializer):
 
     is_liked = serializers.SerializerMethodField()
     cover_image = serializers.ImageField(read_only=True)
-
+    # 👇 좋아요 누른 유저 정보
+    likes = serializers.SerializerMethodField()
     class Meta:
         model = Thread
         fields = '__all__'
@@ -35,4 +38,8 @@ class ThreadSerializer(serializers.ModelSerializer):
         if user and user.is_authenticated:
             return obj in user.liked_threads.all()
         return False
-    
+
+    def get_likes(self, obj):
+        # Thread 모델의 likes ManyToManyField가 user들을 나타내므로,
+        # username 리스트를 반환
+        return [user.username for user in obj.likes.all()]

@@ -2,6 +2,11 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from accounts.models import User
 
+class SimpleUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+
 class CustomRegisterSerializer(RegisterSerializer):
     nickname = serializers.CharField(required=True, max_length=50, allow_blank=False)
     age = serializers.IntegerField(required=False)

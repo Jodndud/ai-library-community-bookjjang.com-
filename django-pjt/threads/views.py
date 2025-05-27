@@ -145,26 +145,26 @@ def comment_list_create(request, book_pk, pk):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def toggle_like(request, book_pk, pk):  # ← book_pk 인자 추가
-    thread = get_object_or_404(Thread, pk=pk)
+    thread = get_object_or_404(Thread, pk=pk, book_id=book_pk)
     user = request.user
     
-    if thread in user.liked_threads.all():
-        user.liked_threads.remove(thread)
-        thread.like_count = thread.liked_by_users.count()
+    if thread.likes.filter(id=user.id).exists():
+        thread.likes.remove(user)
+        thread.like_count = thread.likes.count()
         thread.save()
         return Response({
             'status': 'unliked',
             'like_count': thread.like_count,
-            'user_liked_threads': list(user.liked_threads.values_list('id', flat=True))
+            'likes': [u.username for u in thread.likes.all()]
         }, status=status.HTTP_200_OK)
     else:
-        user.liked_threads.add(thread)
-        thread.like_count = thread.liked_by_users.count()
+        thread.likes.add(user)
+        thread.like_count = thread.likes.count()
         thread.save()
         return Response({
             'status': 'liked',
             'like_count': thread.like_count,
-            'user_liked_threads': list(user.liked_threads.values_list('id', flat=True))
+            'likes': [u.username for u in thread.likes.all()]
         }, status=status.HTTP_200_OK)
     
 
