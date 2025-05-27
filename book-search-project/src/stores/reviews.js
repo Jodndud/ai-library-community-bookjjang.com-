@@ -22,7 +22,7 @@ export const useReviewStore = defineStore('review', () => {
       url: `${API_URL}/threads/`,
     })
       .then((res) => {
-        // console.log(res.data)
+        console.log(res.data)
         reviews.value = res.data
       })
       .catch((err) => {

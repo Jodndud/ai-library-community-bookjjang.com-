@@ -79,20 +79,4 @@ header .logo {
   gap: 16px;
   cursor: pointer;
 }
-
-/* 네이게이션 바 */
-.navbar {
-  display: flex;
-  gap: 16px;
-}
-
-.navbar>a:hover {
-  color: #2d7c4a;
-  font-weight: bold;
-}
-
-.navbar>a.active {
-  color: #2d7c4a;
-  font-weight: bold;
-}
 </style>

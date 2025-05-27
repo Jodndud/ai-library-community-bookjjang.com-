@@ -30,12 +30,12 @@
             <p class="username">{{ review.user }}</p>
             <div class="hover-content">
                 <div class="book-title">{{ review.title }}</div>
-                <div class="like-count">[{{ review.like_count || 0 }}]</div>
+                <div class="comments-count">[{{ review.comments.length || 0 }}]</div>
             </div>
           </div>
         </router-link>
         <div class="right-content">
-          <p class="book-title">{{ bookTitleById(review.book) }}</p>
+          <p class="book-title"><span class="title">도서명 : </span>{{ bookTitleById(review.book) }}</p>
           <p class="rating">⭐ {{ review.rating ?? '0.0' }}</p>
         </div>
       </li>
@@ -105,7 +105,7 @@ const sortedReviews = computed(() => {
     display: flex;flex-direction: column;justify-content: center;
 }
 .title-wrap p{
-    font-size: 14px;color: #878787;
+    font-size: 13px;color: #878787;font-weight: 300;
 }
 
 .right-content{
@@ -113,11 +113,14 @@ const sortedReviews = computed(() => {
     font-size: 16px;font-weight: 300;color: #333;text-align: right;
 }
 .right-content .book-title{
-    color: #333;font-weight: 700;
+  display: flex;align-items: center;gap: 8px;
+  color: #333;font-weight: 700;
 }
+.right-content .book-title .title{font-size:14px ;color:#878787;font-weight: 300;}
 .right-content .rating{
     font-size: 14px;
 }
+
 /* 필터 바 */
 .categories-wrap{
     display: flex;margin-top: 40px;

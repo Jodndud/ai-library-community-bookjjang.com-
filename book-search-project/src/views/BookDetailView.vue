@@ -34,7 +34,7 @@
       <section class="detail-section review">
         <div class="review-title-wrap">
           <p>이 책을 읽고 느낀 감정을 작성해보세요. 책짱봇이 그림을 그려줍니다!</p>
-          <button class="review-create-btn" @click="showReviewModal = true">리뷰쓰기</button>
+          <button class="review-create-btn" @click="handleReviewClick">리뷰쓰기</button>
 
           <!-- 리뷰작성 컴포넌트 -->
           <ReviewCreate :show="showReviewModal" :bookPk="book?.id" @close="showReviewModal = false" />
@@ -53,18 +53,21 @@
 
 <script setup>
 import { onMounted, ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { useAccountStore } from '@/stores/accounts'
 import { useBookListStore } from '@/stores/booksList'
 import { useReviewStore } from '@/stores/reviews'
 import ReviewCreate from '@/components/ReviewCreate.vue'
 import ReviewList from '@/components/ReviewList.vue'
 
-const showReviewModal = ref(false)
-
 const route = useRoute()
+const router = useRouter()
+
+const accountStore = useAccountStore()
 const bookStore = useBookListStore()
 const reviewStore = useReviewStore()
 
+const showReviewModal = ref(false)
 const showComments = ref(false)
 
 const bookId = computed(() => parseInt(route.params.pk, 10))
@@ -106,6 +109,15 @@ const averageRating = computed(() => {
   const sum = ratings.reduce((acc, r) => acc + r, 0)
   return (sum / ratings.length).toFixed(1)
 })
+
+// 인증된 사용자만 리뷰 쓰기 가능능
+const handleReviewClick = () => {
+  if (!accountStore.isLogin) {
+    router.push({ name: 'login' })  // 또는 'LoginPage' 컴포넌트 이름
+  } else {
+    showReviewModal.value = true
+  }
+}
 </script>
 
 <style scoped>

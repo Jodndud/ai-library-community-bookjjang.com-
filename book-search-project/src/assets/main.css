@@ -69,18 +69,30 @@ body {
     transform: translateY(-3px);
 }
 
-.navbar {
-    gap: 16px;
-}
-
-.navbar a {
-    font-family: 'Gothic_Goding';
-    font-size: 18px;
-}
-
 .logout-btn>input {
     font-family: 'Gothic_Goding';
     font-size: 18px;
     border: unset;
     background: unset;
+}
+
+
+/* 네이게이션 바 */
+.navbar {
+    display: flex;
+    gap: 14px;
+}
+
+.navbar a {
+    font-size: 14px;
+}
+
+.navbar>a:hover {
+    color: #2d7c4a;
+    font-weight: bold;
+}
+
+.navbar>a.active {
+    color: #2d7c4a;
+    font-weight: bold;
 }

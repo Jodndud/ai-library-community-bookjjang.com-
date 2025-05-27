@@ -8,7 +8,10 @@
         :slidesPerView="4"
         :spaceBetween="30"
         :modules="modules"
-        :navigation="true"
+        :autoplay="{
+          delay: 2000,
+          disableOnInteraction: false,
+        }"
         :loop="topRatedBooks.length > 5"
         class="recommend-books"
       >
@@ -37,13 +40,13 @@
 import { computed, onMounted } from 'vue'
 import { useBookListStore } from '@/stores/booksList';
 import { Swiper, SwiperSlide } from 'swiper/vue'
-import { Navigation } from 'swiper/modules'
+import { Navigation, Autoplay } from 'swiper/modules'
 
 import 'swiper/css'
 import 'swiper/css/navigation'
 
 // Swiper에서 사용할 모듈 정의
-const modules = [Navigation]
+const modules = [Navigation, Autoplay]
 
 const bookStore = useBookListStore()
 
@@ -64,7 +67,7 @@ onMounted(() => {
 <style>
 /* swiper */
 .recommend-books {
-  padding: 0 50px;
+  padding: 0 25px;
   position: relative;
 }
 

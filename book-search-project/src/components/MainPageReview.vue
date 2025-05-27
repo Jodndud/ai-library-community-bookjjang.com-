@@ -71,11 +71,10 @@ const getBookTitle = (bookId) => {
   width: 100%;
   background-color: rgba(0, 0, 0, 0.7); /* 반투명 검정 배경 */
   color: #fff;
-  padding: 12px;
+  padding: 15px 8px 10px;
   transition: bottom 0.3s ease;
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
 /* 호버 시 위로 올라옴 */
