@@ -30,7 +30,9 @@ class ThreadSerializer(serializers.ModelSerializer):
         return value
 
     def get_is_liked(self, obj):
-        user = self.context.get('request').user
-        return user.is_authenticated and obj in user.liked_threads.all()
-
+        request = self.context.get('request', None)
+        user = getattr(request, 'user', None)
+        if user and user.is_authenticated:
+            return obj in user.liked_threads.all()
+        return False
     
