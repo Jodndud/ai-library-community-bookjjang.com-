@@ -14,26 +14,32 @@
 
     <ul class="review-item">
       <li v-for="review in sortedReviews" :key="review.id">
-        <router-link
-          class="review"
-          :to="{ name: 'reviewDetail', params: { bookId: review.book, reviewId: review.id } }"
-        >
-          <div class="like">2</div>
-          <div class="img">
-            <img
-              :src="reviewStore.BASE_URL + review.cover_image"
+        
+        <div class="left-content">
+          <div class="like">
+            <div class="like-img"><img src="../assets/img/ico_like@2x.png" alt=""></div>
+            {{ review.like_count }}
+          </div>
+            <router-link
+              class="review"
+              :to="{ name: 'reviewDetail', params: { bookId: review.book, reviewId: review.id } }"
+            >
+            <div class="img">
+              <img
+              :src="review.cover_image"
               alt="cover"
               class="cover-image"
               @error="e => e.target.src = noImage"
-            />
-          </div>
-          <div class="title-wrap">
-            <div class="hover-content">
+              />
+            </div>
+            <div class="title-wrap">
+              <div class="hover-content">
                 <div class="book-title">{{ review.title }}</div>
                 <div class="comments-count">[{{ review.comments.length || 0 }}]</div>
+              </div>
             </div>
-          </div>
-        </router-link>
+          </router-link>
+        </div>
         <div class="right-content">
           <p class="book-title"><span class="title">도서명 : </span>{{ bookTitleById(review.book) }}</p>
           <p class="rating">⭐ {{ review.rating ?? '0.0' }}</p>
@@ -84,6 +90,7 @@ const sortedReviews = computed(() => {
 .container{
     width: 768px;
 }
+.left-content{display: flex;gap: 15px;}
 .review-item {
     border-top: 1px solid #dedede;
 }
@@ -100,6 +107,10 @@ const sortedReviews = computed(() => {
 }
 .review img{width: 100%;}
 .review .hover-content{display: flex;align-items: center;gap: 8px;}
+.left-content .like{display: flex;gap: 4px;align-items: center;}
+.left-content .like .like-img{width: 20px;display: flex;align-items: center;}
+.left-content .like .like-img img{width: 100%;}
+
 
 .title-wrap{
     display: flex;flex-direction: column;justify-content: center;
@@ -123,7 +134,7 @@ const sortedReviews = computed(() => {
 
 /* 필터 바 */
 .categories-wrap{
-    display: flex;margin-top: 40px;
+    display: flex;margin: 40px 0 10px;
     justify-content: flex-end;
 }
 .categories-wrap .sort-button:first-child {
@@ -137,11 +148,41 @@ const sortedReviews = computed(() => {
     background: #f6f6f6;
     border: 1px solid #dedede;
     border-left: unset;
-    border-bottom: unset;
 }
 
 .categories-wrap .sort-button.active {
     background: #2d7c4a;
     color: #fff;
+}
+
+/* hover 효과 */
+.review-item li {
+    padding: 8px 20px;
+    border-bottom: 1px solid #dedede;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.review-item li:hover {
+    background-color: rgba(45, 124, 74, 0.05);
+}
+
+.review {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    text-decoration: none;
+}
+
+.review .title-wrap .book-title {
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.review:hover .title-wrap .book-title {
+    text-decoration: underline;
 }
 </style>

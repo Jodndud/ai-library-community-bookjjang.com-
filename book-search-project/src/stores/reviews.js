@@ -30,18 +30,14 @@ export const useReviewStore = defineStore('review', () => {
       })
   }
 
-
   // 특정 책의 리뷰 목록 불러오기
   const fetchReviews = function (bookId) {
     axios({
       method: 'get',
       url: `${API_URL}/${bookId}/threads/`,
-      headers: {
-        'Authorization': `Token ${accountStore.token}`
-      }
     })
       .then((res) => {
-        // console.log(res.data.filter(review => review.book === bookId))
+        console.log(res.data.filter(review => review.book === bookId))
         reviews.value = res.data.filter(review => review.book === bookId)
       })
       .catch((err) => {
@@ -83,7 +79,7 @@ export const useReviewStore = defineStore('review', () => {
       url: `${API_URL}/${bookId}/threads/${reviewId}/`,
     })
       .then((res) => {
-        // console.log(res.data)
+        console.log(res.data)
         reviewDetail.value = res.data
       })
       .catch((err) => {
@@ -155,6 +151,9 @@ export const useReviewStore = defineStore('review', () => {
     return axios({
       method: 'post',
       url: `${API_URL}/${bookId}/threads/${reviewId}/like/`,
+      headers: {
+        'Authorization': `Token ${accountStore.token}`
+      },
     })
       .then((res) => {
         console.log(res.data)
@@ -162,7 +161,6 @@ export const useReviewStore = defineStore('review', () => {
       .catch((err) => {
         console.log(err.message)
       })
-
   }
 
   return {

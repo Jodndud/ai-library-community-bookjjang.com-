@@ -74,7 +74,14 @@ body {
     transform: translateY(-3px);
     border: unset;
     background: unset;
+    cursor: pointer;
 }
+
+.logout-btn>input:hover {
+    color: #2d7c4a;
+    font-weight: bold;
+}
+
 
 
 /* 네이게이션 바 */

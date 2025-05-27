@@ -6,13 +6,17 @@
           {{ review.user }} | {{ review.created_at }}
         </div>
         <router-link :to="{ name: 'reviewDetail', params: { bookId: bookId, reviewId: review.id } }">
-          <div class="img"><img :src="reviewStore.BASE_URL+review.cover_image"
+          <div class="img"><img :src="review.cover_image"
                         @error="e => e.target.src = noImage" alt=""></div>
           <div class="content">{{ review.title }}</div>
         </router-link>
         <div class="likes-comment-wrap">
           <div class="like-wrap" @click="reviewLike(review.id)">
-            <span class="ico_like"></span>{{ review.likes_count }}
+            <span
+              class="ico_like"
+              :class="{ liked: likedReviews.has(review.id) }"
+            >
+            </span>{{ review.like_count }}
           </div>
           <div class="comment-btn" @click="toggleComments(review.id)">
             <span class="ico_reply"></span>
@@ -91,8 +95,23 @@ function submitComment(reviewId) {
     })
 }
 
+const likedReviews = ref(new Set())
 // 좋아요
-const reviewLike = function(reviewId){
+const reviewLike = (reviewId) => {
+  const review = reviewStore.reviews.find(r => r.id === reviewId)
+  if (!review) return
+
+  if (likedReviews.value.has(reviewId)) {
+    // 좋아요 취소
+    review.like_count--
+    likedReviews.value.delete(reviewId)
+  } else {
+    // 좋아요 추가
+    review.like_count++
+    likedReviews.value.add(reviewId)
+  }
+
+  // 서버에 좋아요 요청 (실패해도 UI는 먼저 반영됨)
   reviewStore.reviewLike(bookId, reviewId)
 }
 
@@ -199,6 +218,11 @@ const sortedReviews = computed(() => {
 
 .ico_reply {
   background: url(../assets/img/ico_reply@2x.png) center no-repeat;
+  background-size: contain;
+}
+
+.ico_like.liked  {
+  background: url(../assets/img/ico_ullike@2x.png) center no-repeat;
   background-size: contain;
 }
 

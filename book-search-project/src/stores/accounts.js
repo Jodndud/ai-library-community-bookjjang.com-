@@ -72,8 +72,27 @@ export const useAccountStore = defineStore('account', () => {
       })
   }
 
+  const userInfo = ref([])
+  const myPage = function () {
+    axios({
+      method: 'get',
+      url: `${API_URL}/accounts/mypage/`,
+      headers: {
+        'Authorization': `Token ${token.value}`
+      }
+    })
+      .then((res) => {
+        console.log(res.data)
+        userInfo.value = res.data
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+
+  }
+
   return {
-    token, isLogin,
-    signUp, logIn, logOut
+    token, isLogin, userInfo,
+    signUp, logIn, logOut, myPage
   }
 }, { persist: true })

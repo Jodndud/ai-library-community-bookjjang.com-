@@ -1,24 +1,26 @@
 <template>
   <div class="container">
+    <p class="create-date">{{ review.created_at }}</p>
     <div class="title-wrap">
       <p class="rating-wrap"><span class="rating">{{ review.rating }}</span>/5</p>
       <h2>{{ review.title }}</h2>
       <p class="user">{{ review.user }}</p>
     </div>
-    <p class="text">{{ review.content }}</p>
+    
     <div class="review-detail-wrap">
       <div class="img">
         <img :src="reviewStore.BASE_URL + review.cover_image" width="100%" alt="">
       </div>
-      <div class="comment-wrap">
-      </div>
+      <p class="text">{{ review.content }}</p>
     </div>
     <div>
-      <p><strong>작성일:</strong> {{ review.created_at }}</p>
-
-      <h3>댓글</h3>
       <!-- 댓글 목록 및 작성 -->
       <ul class="comment-wrap">
+
+      <button class="like-btn">
+        <img src="../assets/img/ico_like@2x.png" alt="">
+        {{ review.like_count }}
+      </button>
         <div class="byte_check_wrap">
           <textarea
             v-model="commentInputs[review.id]"
@@ -30,7 +32,6 @@
             <button class="comment-submit" @click="submitComment(review.id)">등록</button>
           </div>
         </div>
-
         <li class="comment" v-for="comment in review.comments" :key="comment.id">
           <div class="user-date">{{ comment.user }} | {{ comment.created_at }}</div>
           <div class="content">{{ comment.content }}</div>
@@ -83,14 +84,36 @@ function submitComment(reviewId) {
 
 
 <style scoped>
+.container{padding-top: 40px;}
+
+.create-date{font-size: 14px;color: #252525;font-weight: 300;margin:0 0 5px 5px;}
+
 .title-wrap{
   display: flex;justify-content: space-between;align-items: center;
   background-color: #eee;
-  padding: 12px 20px;margin-top: 40px;
+  padding: 12px 20px;
 }
 .title-wrap h2{font-size: 22px;font-weight: 500;}
 .title-wrap .user{font-size: 14px;color: #80888A;font-weight: 300;}
 .img{
   padding: 20px;
+}
+
+.review-detail-wrap{
+  padding-bottom: 50px;
+  border: 1px solid #dedede;
+  border-top: unset;
+}
+.review-detail-wrap .text{padding: 0 20px;}
+.like-btn{
+  cursor: pointer;
+  display: flex;align-items: center;justify-content: center;gap: 5px;
+  border: unset;background: unset;
+  margin: 10px auto 20px;
+  font-size: 16px;font-weight: 500;
+}
+.like-btn img{
+  width: 25px;
+  transform: translateY(-3px);
 }
 </style>

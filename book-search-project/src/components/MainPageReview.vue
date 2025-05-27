@@ -4,7 +4,7 @@
     <ul class="review-item">
       <li v-for="review in sortedReviews" :key="review.id">
         <router-link class="review" :to="{ name: 'reviewDetail', params: { bookId:review.book ,reviewId: review.id } }">
-          <div class="img"><img :src="reviewStore.BASE_URL+review.cover_image" alt="cover" @error="e => e.target.src = noImage" class="cover-image" /></div>
+          <div class="img"><img :src="review.cover_image" alt="cover" @error="e => e.target.src = noImage" class="cover-image" /></div>
           <div class="hover-content">
             <div class="like-count">{{ getBookTitle(review.book) }}</div>
             <div class="title-wrap">
