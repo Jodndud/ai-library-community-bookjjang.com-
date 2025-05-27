@@ -7,6 +7,7 @@ from rest_framework import status
 from .models import Book, Author
 from .serializers import BookSerializer, AuthorSerializer, BookDetailSerializer
 from .utils.wiki_api import process_author_info_by_book_pk
+from rest_framework.permissions import AllowAny
 
 # 책 목록 조회
 # URL: api/v1/books/
@@ -24,25 +25,26 @@ def book_detail(request, pk):
     serializer = BookSerializer(book, context={'request': request})
     return Response(serializer.data)
 
-# 책 기반 작가 정보 조회
+## 책 기반 작가 정보 조회
 # URL: api/v1/books/<int:pk>/author/
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def author_info_by_book(request, pk):
     """
     book pk를 받아서 위키피디아+GPT 기반으로 작가 정보(소개, 대표작, 사진 등) 반환
     """
-    # DB에서 Book 존재 확인 및 작가 정보 처리 함수 호출
-    author_data = process_author_info_by_book_pk(pk)
-    if author_data is None:
-        return Response({"detail": "책 또는 작가 정보를 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
-    
-    # author_data 예시 키:
-    # {
-    #   "author_name": "홍길동",
-    #   "author_info": "홍길동은 ...",
-    #   "author_works": "대표작1, 대표작2, 대표작3",
-    #   "author_photo_url": "/media/author_profiles/author_10_홍길동.jpg",
-    #   "wiki_url": "https://ko.wikipedia.org/wiki/홍길동_(작가)"
-    # }
+    try:
+        author_data = process_author_info_by_book_pk(pk)
+        if author_data is None:
+            return Response(
+                {"detail": "책 또는 작가 정보를 찾을 수 없습니다."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        return Response(author_data)
 
-    return Response(author_data)
+    except Exception as e:
+        print("[ERROR] author_info_by_book 실패:", e)
+        return Response(
+            {"detail": "작가 정보를 처리하는 도중 오류가 발생했습니다."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
